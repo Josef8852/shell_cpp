@@ -13,7 +13,7 @@ int main() {
 
 
   
-  
+  //REPL
   while(true) {
 
       cout << PS1 ;
@@ -22,8 +22,11 @@ int main() {
     
       getline(cin , command) ;
     
-    
       cout << command << ": command not found" << endl ;
+
+
+      if(command == "exit") break ; 
+      
   }
 
 
