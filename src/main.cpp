@@ -9,14 +9,22 @@ int main() {
 
   cerr << unitbuf;
 
-  cout << "$ ";
-
-  string command ;
-
-  getline(cin , command) ;
+  string PS1 = "$ " ;
 
 
-  cout << command << ": command not found" << endl ;
+  
+  
+  while(true) {
+
+      cout << PS1 ;
+      
+      string command ;
+    
+      getline(cin , command) ;
+    
+    
+      cout << command << ": command not found" << endl ;
+  }
 
 
 }
