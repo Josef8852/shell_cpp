@@ -23,6 +23,7 @@ int main() {
       getline(cin , command) ;
 
 
+
       
       if(command == "exit") break ; 
       
