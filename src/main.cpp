@@ -26,7 +26,6 @@ int main() {
       
       cout << command << ": command not found" << endl ;
 
-      
   }
 
 
