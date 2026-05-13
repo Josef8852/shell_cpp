@@ -22,12 +22,21 @@ int main() {
     
       getline(cin , command) ;
 
-      if(command == "exit") break ; 
+   
+
+      if(command == "exit") break; 
+          
+      if(command.substr(0,5) == "echo ") {
+          cout << command.substr(5) << endl ; 
+      }
+      else {
+          cout << command << ": command not found" << endl ;
+      }
       
-      cout << command << ": command not found" << endl ;
+
 
       
   }
 
-
+  
 }
