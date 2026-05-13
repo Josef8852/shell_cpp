@@ -6,17 +6,16 @@ using namespace std ;
 int main() {
   // Flush after every std::cout / std:cerr
   cout << unitbuf;
-  
+
   cerr << unitbuf;
 
 
-  string command ; 
+  string command ;
 
   getline(cin , command) ;
 
 
-  cout << command << "$: command not found" << endl ; 
-  
-  
-  cout << "$ ";
+  cout << command << ": command not found" << endl ;
+
+
 }
