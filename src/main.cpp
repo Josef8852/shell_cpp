@@ -21,11 +21,10 @@ int main() {
       string command ;
     
       getline(cin , command) ;
+
     
       cout << command << ": command not found" << endl ;
 
-
-      if(command == "exit") break ; 
       
   }
 
