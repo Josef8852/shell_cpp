@@ -9,6 +9,7 @@ int main() {
 
   cerr << unitbuf;
 
+  cout << "$ ";
 
   string command ;
 
