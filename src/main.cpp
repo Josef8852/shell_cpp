@@ -1,11 +1,22 @@
 #include <iostream>
 #include <string>
 
+using namespace std ;
+
 int main() {
   // Flush after every std::cout / std:cerr
-  std::cout << std::unitbuf;
-  std::cerr << std::unitbuf;
+  cout << unitbuf;
+  
+  cerr << unitbuf;
 
 
-   std::cout << "$ ";
+  string command ; 
+
+  getline(cin , command) ;
+
+
+  cout << command << ": command not found" << endl ; 
+  
+  
+  cout << "$ ";
 }
