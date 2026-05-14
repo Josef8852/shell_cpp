@@ -1,5 +1,7 @@
 #include <iostream>
 #include <string>
+#include <sstream>
+#include <unordered_set>
 
 using namespace std ;
 
@@ -12,40 +14,65 @@ int main() {
   string PS1 = "$ " ;
 
 
-  
+  unordered_set<string> builtins = {
+      "echo" ,
+      "exit" ,
+      "type"
+  };
+
+
   //REPL
   while(true) {
 
       cout << PS1 ;
-      
+
+      string line ;
+
+      getline(cin , line) ;
+
+
+      stringstream params(line);
+
+
       string command ;
-    
-      getline(cin , command) ;
 
-   
+      params >> command ;
 
-      if(command == "exit") break; 
-      else if(command.substr(0,5) == "echo ") {
-          cout << command.substr(5) << endl ; 
+      if(command == "exit") {
+          break ;
       }
-      else if(command.substr(0,5) == "type ") {
 
-          if(command.substr(5) == "type" || command.substr(5) == "exit" || command.substr(5) == "echo")  {
-              cout << command.substr(5) << " is a shell builtin" << endl ; 
+      if(command == "echo") {
+          string rest ;
+          getline(params , rest);
+
+          if(!rest.empty() && rest[0] == ' ') {
+              rest.erase(0,1);
           }
-          else {
-              cout << command.substr(5) << ": not found" << endl ; 
-          }
+
+          cout << rest << endl ;
+      }
+      else if(command == "type") {
           
+          string arg ;
+
+          while(params >> arg) {
+              if(builtins.count(arg)) {
+                  cout << arg << " is a shell builtin" << endl ;
+              }
+              else {
+                  cout << arg << ": not found" << endl ;
+              }
+          }
       }
       else {
           cout << command << ": command not found" << endl ;
       }
-      
 
 
-      
+
+
   }
 
-  
+
 }
