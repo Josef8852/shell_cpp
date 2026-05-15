@@ -2,8 +2,13 @@
 #include <string>
 #include <sstream>
 #include <unordered_set>
+#include <cstdlib>
+#include <filesystem>
+#include <unistd.h>
 
 using namespace std ;
+
+namespace fs = filesystem;
 
 int main() {
   // Flush after every std::cout / std:cerr
@@ -13,7 +18,11 @@ int main() {
 
   string PS1 = "$ " ;
 
+  char* path = getenv("PATH");
 
+  string PATH = path ;
+
+  
   unordered_set<string> builtins = {
       "echo" ,
       "exit" ,
@@ -56,12 +65,38 @@ int main() {
           
           string arg ;
 
+          stringstream dirs(PATH) ;
+
           while(params >> arg) {
               if(builtins.count(arg)) {
                   cout << arg << " is a shell builtin" << endl ;
               }
               else {
-                  cout << arg << ": not found" << endl ;
+
+                  string dir ; 
+
+                  bool found = false ; 
+
+                  while(getline(dirs, dir, ':')) {
+
+                      // build fullPath 
+                      string fullPath = dir + "/" + arg ; 
+
+
+                      // if path exists and is executable
+                      
+                      if(fs::exists(fullPath) && access(fullPath.c_str(), X_OK) == 0) {
+                          cout << arg << " is " << fullPath << endl ; 
+                          found = true ;
+                          break ; 
+                      }
+                      
+                  }
+
+                  if(!found) {
+                      cout << arg << ": not found" << endl ; 
+                  }
+                  
               }
           }
       }
