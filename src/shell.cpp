@@ -86,7 +86,7 @@ void handleTypeCommand(stringstream &params){
 }
 
 
-void executeProgram(const string &command , const string& fullPath ,  stringstream &params) {
+void executeProgram(const string &fullPath , const string &command , stringstream &params) {
 
     string arg ; 
 

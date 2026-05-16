@@ -48,7 +48,7 @@ int main() {
           
           if(!fullPath.empty()) {
 
-              executeProgram(command, fullPath , params) ;
+              executeProgram(fullPath, command , params) ;
           }
           else {
               cout << command << ": command not found" << endl ;
