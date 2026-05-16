@@ -59,17 +59,11 @@ int main() {
 
       params >> command ;
 
-      if(command == "exit") {
-          break ;
-      }
+      if(command == "exit") break ; 
 
-      if(command == "echo") {
-
-        printLine(params);
-      }
-
+      if(command == "echo") printLine(params);
       
-      else if(command == "type") {
+      if(command == "type") {
           
           string arg ;
 
