@@ -128,6 +128,7 @@ void executeProgram(const string &fullPath , const string &command , stringstrea
         // wait until child finish
         waitpid(pid, nullptr , 0) ;
     }
+     // pid < 0
     else {
         perror("fork failed");
     }

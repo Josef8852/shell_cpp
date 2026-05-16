@@ -1,4 +1,5 @@
 #include "shell.h"
+#include <filesystem>
 
 using namespace std;
 
@@ -34,6 +35,10 @@ int main() {
       if(command == "exit") break ;
 
       else if(command == "echo") printLine(params);
+
+      else if(command == "pwd") {
+          cout << filesystem::current_path().string() << endl ; 
+      }
 
       else if(command == "type") {
 
