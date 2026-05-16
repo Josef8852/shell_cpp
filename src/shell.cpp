@@ -43,7 +43,7 @@ string findExecutableInPath(const string &path , const string &arg) {
     
         string fullPath = dir + "/" + arg ; 
 
-        // if path exists and is executable
+        // if path exists and is executablex
         
         if(fs::exists(fullPath) && access(fullPath.c_str(), X_OK) == 0) {
             return fullPath ;
@@ -129,4 +129,9 @@ void executeProgram(const string &fullPath , const string &command , stringstrea
     else {
         perror("fork failed");
     }
+}
+
+
+void printCurrentDir() {
+    cout << fs::current_path().string() << endl ; 
 }

@@ -34,17 +34,10 @@ int main() {
 
       else if(command == "echo") printLine(params);
 
-      else if(command == "pwd") {
-          cout << fs::current_path().string() << endl ; 
-      }
+      else if(command == "pwd") printCurrentDir() ;
 
-      else if(command == "type") {
-
-          handleTypeCommand(params);
-
-
-      }
-
+      else if(command == "type")  handleTypeCommand(params);
+      
       else {
 
           string fullPath = findExecutableInPath(getPath(), command) ;
@@ -57,9 +50,6 @@ int main() {
               cout << command << ": command not found" << endl ;
           }
       }
-
-
-
 
   }
 
