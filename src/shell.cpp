@@ -10,7 +10,8 @@ string PATH = getPath();
 unordered_set<string> builtins = {
     "echo",
     "exit",
-    "type"
+    "type",  
+    "pwd"
 };
 
 
