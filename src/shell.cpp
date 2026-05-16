@@ -1,9 +1,6 @@
 #include "shell.h"
 
 
-namespace fs = std::filesystem;
-
-
 
 string PATH = getPath();
 
@@ -48,7 +45,7 @@ string findExecutableInPath(const string &path , const string &arg) {
 
         // if path exists and is executable
         
-        if(fs::exists(fullPath) && access(fullPath.c_str(), X_OK) == 0) {
+        if(filesystem::exists(fullPath) && access(fullPath.c_str(), X_OK) == 0) {
             return fullPath ;
         }
         
