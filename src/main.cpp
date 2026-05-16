@@ -11,6 +11,19 @@ using namespace std ;
 namespace fs = filesystem;
 
 
+
+unordered_set<string> builtins = {
+    "echo" ,
+    "exit" ,
+    "type"
+};
+
+
+string getPath() {
+    char* p = getenv("PATH");
+    return p ? string(p) : "";
+}
+
 void printLine(stringstream &params) {
     string rest ;
     getline(params , rest);
@@ -22,6 +35,61 @@ void printLine(stringstream &params) {
     cout << rest << endl ;
 }
 
+
+string findExecutableInPath(const string &path , const string &arg) {
+
+    string dir ; 
+
+    stringstream dirs(path);
+    
+    while(getline(dirs, dir, ':')) {
+
+        // build fullPath 
+    
+        string fullPath = dir + "/" + arg ; 
+
+        // if path exists and is executable
+        
+        if(fs::exists(fullPath) && access(fullPath.c_str(), X_OK) == 0) {
+            return fullPath ;
+        }
+        
+    }
+
+    return "" ; 
+}
+
+
+
+void handleTypeCommand(const string &line){
+
+        string arg ;
+
+        string path = getPath();
+
+        stringstream params(line) ;
+    
+    while(params >> arg) {
+        if(builtins.count(arg)) {
+            cout << arg << " is a shell builtin" << endl ;
+        }
+        else {
+
+
+            string fullPath = findExecutableInPath(path , arg);
+            
+            if(!fullPath.empty()) {
+                cout << arg << " is " << fullPath << endl ; 
+         
+            }
+            else {
+               cout << arg << ": not found" << endl ; 
+            }
+            
+        }
+    }
+}
+
 int main() {
   // Flush after every std::cout / std:cerr
   cout << unitbuf;
@@ -29,20 +97,9 @@ int main() {
   cerr << unitbuf;
 
   string PS1 = "$ " ;
-
-  char* path = getenv("PATH");
-
-  string PATH = path ;
-
   
-  unordered_set<string> builtins = {
-      "echo" ,
-      "exit" ,
-      "type"
-  };
 
-
-  //REPL
+  //REPL             
   while(true) {
 
       cout << PS1 ;
@@ -59,49 +116,18 @@ int main() {
 
       params >> command ;
 
+      if(command.empty()) continue; 
+
       if(command == "exit") break ; 
 
-      if(command == "echo") printLine(params);
+      else if(command == "echo") printLine(params);
       
-      if(command == "type") {
+      else if(command == "type") {
           
-          string arg ;
-
-          stringstream dirs(PATH) ;
-
-          while(params >> arg) {
-              if(builtins.count(arg)) {
-                  cout << arg << " is a shell builtin" << endl ;
-              }
-              else {
-
-                  string dir ; 
-
-                  bool found = false ; 
-
-                  while(getline(dirs, dir, ':')) {
-
-                      // build fullPath 
-                      string fullPath = dir + "/" + arg ; 
-
-
-                      // if path exists and is executable
-                      
-                      if(fs::exists(fullPath) && access(fullPath.c_str(), X_OK) == 0) {
-                          cout << arg << " is " << fullPath << endl ; 
-                          found = true ;
-                          break ; 
-                      }
-                      
-                  }
-
-                  if(!found) {
-                      cout << arg << ": not found" << endl ; 
-                  }
-                  
-              }
-          }
+          handleTypeCommand(line);
+       
       }
+      
       else {
           cout << command << ": command not found" << endl ;
       }
