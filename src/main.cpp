@@ -10,6 +10,18 @@ using namespace std ;
 
 namespace fs = filesystem;
 
+
+void printLine(stringstream &params) {
+    string rest ;
+    getline(params , rest);
+
+    if(!rest.empty() && rest[0] == ' ') {
+        rest.erase(0,1);
+    }
+
+    cout << rest << endl ;
+}
+
 int main() {
   // Flush after every std::cout / std:cerr
   cout << unitbuf;
@@ -52,15 +64,11 @@ int main() {
       }
 
       if(command == "echo") {
-          string rest ;
-          getline(params , rest);
 
-          if(!rest.empty() && rest[0] == ' ') {
-              rest.erase(0,1);
-          }
-
-          cout << rest << endl ;
+        printLine(params);
       }
+
+      
       else if(command == "type") {
           
           string arg ;
