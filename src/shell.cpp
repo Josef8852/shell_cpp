@@ -45,7 +45,7 @@ string findExecutableInPath(const string &path , const string &arg) {
 
         // if path exists and is executable
         
-        if(filesystem::exists(fullPath) && access(fullPath.c_str(), X_OK) == 0) {
+        if(fs::exists(fullPath) && access(fullPath.c_str(), X_OK) == 0) {
             return fullPath ;
         }
         

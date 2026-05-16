@@ -1,9 +1,6 @@
 #include "shell.h"
 
 
-using namespace std;
-
-
 
 int main() {
   // Flush after every std::cout / std:cerr
@@ -38,7 +35,7 @@ int main() {
       else if(command == "echo") printLine(params);
 
       else if(command == "pwd") {
-          cout << filesystem::current_path().string() << endl ; 
+          cout << fs::current_path().string() << endl ; 
       }
 
       else if(command == "type") {

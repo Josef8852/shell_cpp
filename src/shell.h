@@ -14,6 +14,8 @@
 
 using namespace  std ;
 
+namespace fs = filesystem;
+
 string getPath();
 
 void printLine(stringstream &params);
