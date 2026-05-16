@@ -1,13 +1,8 @@
 #include "shell.h"
-#include <iostream>
-#include <unordered_set>
-#include <cstdlib>
-#include <filesystem>
-#include <unistd.h>
+
 
 namespace fs = std::filesystem;
 
-using namespace std;
 
 
 string PATH = getPath();
@@ -87,5 +82,52 @@ void handleTypeCommand(stringstream &params){
             }
             
         }
+    }
+}
+
+
+void executeProgram(const string &command , const string& fullPath ,  stringstream &params) {
+
+    string arg ; 
+
+    vector<string> args ; 
+
+    args.push_back(command) ;
+    
+    while(params >> arg) {
+        args.push_back(arg) ;
+    }
+
+    vector<char*> argv ; 
+
+    // argv accepts char* argv[] in C 
+
+    for(auto &str : args) {
+        argv.push_back(str.data());
+    }
+
+    // end of args 
+    argv.push_back(nullptr);
+
+    // create a child process 
+    pid_t pid = fork() ;
+
+    // inside child
+    if(pid == 0) {
+
+        // execute
+        execv(fullPath.c_str() , argv.data());
+
+        // if execution fails 
+        perror("execv failed");
+        exit(1);
+    }
+    // inside parent
+    else if(pid > 0) {
+        // wait until child finish
+        waitpid(pid, nullptr , 0) ;
+    }
+    else {
+        perror("fork failed");
     }
 }
