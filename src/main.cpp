@@ -61,13 +61,12 @@ string findExecutableInPath(const string &path , const string &arg) {
 
 
 
-void handleTypeCommand(const string &line){
+void handleTypeCommand(stringstream &params){
 
         string arg ;
 
         string path = getPath();
 
-        stringstream params(line) ;
     
     while(params >> arg) {
         if(builtins.count(arg)) {
@@ -124,7 +123,8 @@ int main() {
       
       else if(command == "type") {
           
-          handleTypeCommand(line);
+          handleTypeCommand(params);
+
        
       }
       
