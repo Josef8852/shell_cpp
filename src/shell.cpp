@@ -1,4 +1,6 @@
 #include "shell.h"
+#include <cstdlib>
+#include <filesystem>
 #include <sstream>
 
 
@@ -143,11 +145,21 @@ void changeDirectory(stringstream &params) {
 
     params >> dir;
 
-    
+
+    char* home = getenv("HOME");
+
+    // special ~ -> home 
+    if(dir == "~") {
+        fs::current_path(string(home));
+        return ;
+    }
+
+
     if(fs::exists(dir) && fs::is_directory(dir)) {
-        fs::current_path(dir) ;
-    }
+       fs::current_path(dir) ;
+   }
     else {
-        cout << "cd" << ": " << dir << ": No such file or directory" << endl ;
-    }
+       cout << "cd" << ": " << dir << ": No such file or directory" << endl ;
+   }
+    
 }
