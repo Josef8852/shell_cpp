@@ -149,7 +149,7 @@ void changeDirectory(stringstream &params) {
     char* home = getenv("HOME");
 
     // special ~ -> home 
-    if(dir == "~") {
+    if(dir == "~" || dir.empty()) {
         fs::current_path(string(home));
         return ;
     }
