@@ -1,4 +1,5 @@
 #include "shell.h"
+#include <sstream>
 
 
 
@@ -135,4 +136,18 @@ void executeProgram(const string &fullPath , const string &command , stringstrea
 
 void printCurrentDir() {
     cout << fs::current_path().string() << endl ; 
+}
+
+void changeDirectory(stringstream &params) {
+    string dir ;
+
+    params >> dir;
+
+    
+    if(fs::exists(dir) && fs::is_directory(dir)) {
+        fs::current_path(dir) ;
+    }
+    else {
+        cout << "cd" << ": " << dir << ": No such file or directory" << endl ;
+    }
 }

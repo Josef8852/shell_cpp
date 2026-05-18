@@ -1,5 +1,5 @@
 #include "shell.h"
-#include <filesystem>
+
 
 
 
@@ -39,21 +39,7 @@ int main() {
 
       else if(command == "type")  handleTypeCommand(params);
 
-      else if(command == "cd") {
-
-          string dir ;
-
-          params >> dir;
-
-          
-          if(fs::exists(dir) && fs::is_directory(dir)) {
-              fs::current_path(dir) ;
-          }
-          else {
-              cout << command << ": " << dir << ": No such file or directory" << endl ;
-          }
-          
-      }
+      else if(command == "cd") changeDirectory(params);
       
       else {
 
