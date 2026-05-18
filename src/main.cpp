@@ -49,6 +49,9 @@ int main() {
           if(fs::exists(dir) && fs::is_directory(dir)) {
               fs::current_path(dir) ;
           }
+          else {
+              cout << command << ": " << dir << ": No such file or directory" << endl ;
+          }
           
       }
       
