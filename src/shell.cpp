@@ -8,7 +8,8 @@ unordered_set<string> builtins = {
     "echo",
     "exit",
     "type",  
-    "pwd"
+    "pwd" , 
+    "cd"
 };
 
 
