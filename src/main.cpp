@@ -1,4 +1,5 @@
 #include "shell.h"
+#include <filesystem>
 
 
 
@@ -37,6 +38,19 @@ int main() {
       else if(command == "pwd") printCurrentDir() ;
 
       else if(command == "type")  handleTypeCommand(params);
+
+      else if(command == "cd") {
+
+          string dir ;
+
+          params >> dir;
+
+          
+          if(fs::exists(dir) && fs::is_directory(dir)) {
+              fs::current_path(dir) ;
+          }
+          
+      }
       
       else {
 
