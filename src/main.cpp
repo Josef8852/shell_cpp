@@ -21,25 +21,22 @@ int main() {
 
       getline(cin , line) ;
 
+      vector<string> args = parseLine(line);
 
-      stringstream params(line);
+      string command = args[0] ;
 
-
-      string command ;
-
-      params >> command ;
 
       if(command.empty()) continue;
 
       if(command == "exit") break ;
 
-      else if(command == "echo") printLine(params);
+      else if(command == "echo") printLine(args);
 
       else if(command == "pwd") printCurrentDir() ;
 
-      else if(command == "type")  handleTypeCommand(params);
+      else if(command == "type")  handleTypeCommand(args);
 
-      else if(command == "cd") changeDirectory(params);
+      else if(command == "cd") changeDirectory(args);
       
       else {
 
@@ -47,7 +44,7 @@ int main() {
           
           if(!fullPath.empty()) {
 
-              executeProgram(fullPath, command , params) ;
+              executeProgram(fullPath, args) ;
           }
           else {
               cout << command << ": command not found" << endl ;

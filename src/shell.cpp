@@ -23,34 +23,26 @@ string getPath() {
 
 
 
-void printLine(stringstream &params) {
-    string line;
-    getline(params, line);
-
-    if (!line.empty() && line[0] == ' ')
-        line.erase(0, 1);
-
-    bool isInsideSingleQuote = false;
-    string word = "";
+vector<string> parseLine(const string &input) {
     vector<string> words;
+    string word;
+    bool inQuote = false;
 
-    for (int i = 0; i < line.length(); i++) {
+    for (char c : input) {
 
-        char curr = line[i];
-
-        if (curr == '\'') {
-            isInsideSingleQuote = !isInsideSingleQuote;
+        if (c == '\'') {
+            inQuote = !inQuote;
             continue;
         }
 
-        if (!isInsideSingleQuote && curr == ' ') {
+        if (c == ' ' && !inQuote) {
             if (!word.empty()) {
                 words.push_back(word);
                 word.clear();
             }
-        }
+        } 
         else {
-            word += curr;
+            word += c;
         }
     }
 
@@ -58,11 +50,18 @@ void printLine(stringstream &params) {
         words.push_back(word);
     }
 
-    for (auto &word : words) {
-        cout << word << " ";
+    return words;
+}
+
+
+void printLine(vector<string> &args) {
+
+    for(int i = 1 ; i < args.size() ; i++) {
+        cout << args[i] << " ";
     }
 
-    cout << endl;
+    cout << endl ; 
+    
 }
 
 
@@ -91,13 +90,14 @@ string findExecutableInPath(const string &path , const string &arg) {
 
 
 
-void handleTypeCommand(stringstream &params){
-
-        string arg ;
+void handleTypeCommand(vector<string> &args){
 
 
     
-    while(params >> arg) {
+     for(int i = 1 ; i < args.size() ; i++){
+
+         string arg = args[i] ; 
+         
         if(builtins.count(arg)) {
             cout << arg << " is a shell builtin" << endl ;
         }
@@ -119,17 +119,9 @@ void handleTypeCommand(stringstream &params){
 }
 
 
-void executeProgram(const string &fullPath , const string &command , stringstream &params) {
+void executeProgram(const string &fullPath , vector<string> &args) {
 
-    string arg ; 
-
-    vector<string> args ; 
-
-    args.push_back(command) ;
-    
-    while(params >> arg) {
-        args.push_back(arg) ;
-    }
+   
 
     vector<char*> argv ; 
 
@@ -171,10 +163,11 @@ void printCurrentDir() {
     cout << fs::current_path().string() << endl ; 
 }
 
-void changeDirectory(stringstream &params) {
-    string dir ;
+void changeDirectory(vector<string> &args) {
 
-    params >> dir;
+    if (args.size() < 2) return;
+    
+    string dir = args[1] ;
 
 
     char* home = getenv("HOME");

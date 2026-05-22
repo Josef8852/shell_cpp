@@ -19,14 +19,16 @@ namespace fs = filesystem;
 
 string getPath();
 
-void printLine(stringstream &params);
+vector<string> parseLine(const string &input);
+
+void printLine(vector<string> &args) ;
 
 string findExecutableInPath(const string &path , const string &arg);
 
-void handleTypeCommand(stringstream &params);
+void handleTypeCommand(vector<string>&args);
 
-void executeProgram(const string &fullPath , const string &command , stringstream &params) ;
+void executeProgram(const string &fullPath , vector<string> &args);
 
 void printCurrentDir() ;
 
-void changeDirectory(stringstream &params) ;
+void changeDirectory(vector<string> &args);
