@@ -26,16 +26,21 @@ string getPath() {
 vector<string> parseLine(const string &input) {
     vector<string> words;
     string word;
-    bool isInsideSingleQuote = false;
+    bool isInsideSingleQuote = false , isInsideDoubleQuotes = false;
 
     for (char c : input) {
 
-        if (c == '\'') {
+        if (c == '\'' && !isInsideDoubleQuotes) {
             isInsideSingleQuote = !isInsideSingleQuote;
             continue;
         }
 
-        if (c == ' ' && !isInsideSingleQuote) {
+        if( c == '\"' && !isInsideSingleQuote) {
+            isInsideDoubleQuotes = !isInsideDoubleQuotes;
+            continue;
+        }
+
+        if (c == ' ' && !isInsideSingleQuote && !isInsideDoubleQuotes) {
             if (!word.empty()) {
                 words.push_back(word);
                 word.clear();
@@ -173,9 +178,6 @@ void changeDirectory(vector<string> &args) {
    else {
        dir = args[1] ; 
    }
-
-
-
 
     char* home = getenv("HOME");
 
