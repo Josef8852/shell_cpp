@@ -27,11 +27,34 @@ void printLine(stringstream &params) {
     string rest ;
     getline(params , rest);
 
+
+    bool hasQuotes = false ;
+
     if(!rest.empty() && rest[0] == ' ') {
         rest.erase(0,1);
     }
 
-    cout << rest << endl ;
+    if(rest.front() == '\'' && rest.back() == '\'') {
+            hasQuotes = true ;
+            rest.erase(0,1);
+            rest.erase(rest.length() -1);
+    }
+
+    if(!hasQuotes) {
+        stringstream words(rest) ; 
+        string word ; 
+
+        while(words >> word) {
+            cout << word << " " ;
+        }
+
+        cout << endl ; 
+    }
+    else {
+        cout << rest << endl ; 
+    }
+
+   
 }
 
 

@@ -10,6 +10,7 @@
 #include <unistd.h>
 #include <sys/wait.h>
 #include <vector>
+#include <algorithm>
 
 
 using namespace  std ;
