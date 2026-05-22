@@ -28,33 +28,39 @@ void printLine(stringstream &params) {
     getline(params , rest);
 
 
-    bool hasQuotes = false ;
 
     if(!rest.empty() && rest[0] == ' ') {
         rest.erase(0,1);
     }
 
-    if(rest.front() == '\'' && rest.back() == '\'') {
-            hasQuotes = true ;
-            rest.erase(0,1);
-            rest.erase(rest.length() -1);
-    }
+    bool isInsideSingleQuote = false , lastWasSpace = false  ; 
 
-    if(!hasQuotes) {
-        stringstream words(rest) ; 
-        string word ; 
+    string line = "" ; 
+        
+        for(int i =  0 ; i < rest.length() ; i++) {
 
-        while(words >> word) {
-            cout << word << " " ;
-        }
+            
+            if(rest[i] == '\'') {
+                isInsideSingleQuote = !isInsideSingleQuote ;
+               continue ;  
+            }
 
-        cout << endl ; 
-    }
-    else {
-        cout << rest << endl ; 
-    }
+            if(rest[i] == ' ' && !isInsideSingleQuote) {
+                if(!lastWasSpace) {
+                    line += ' ';
+                    lastWasSpace = true ; 
+                }
+            }
+            else {
+                line += rest[i] ; 
+                lastWasSpace = false ;
+            }
+        
+    
+}
 
-   
+        cout << line << endl ; 
+        
 }
 
 
