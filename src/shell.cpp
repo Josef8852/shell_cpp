@@ -26,16 +26,16 @@ string getPath() {
 vector<string> parseLine(const string &input) {
     vector<string> words;
     string word;
-    bool inQuote = false;
+    bool isInsideSingleQuote = false;
 
     for (char c : input) {
 
         if (c == '\'') {
-            inQuote = !inQuote;
+            isInsideSingleQuote = !isInsideSingleQuote;
             continue;
         }
 
-        if (c == ' ' && !inQuote) {
+        if (c == ' ' && !isInsideSingleQuote) {
             if (!word.empty()) {
                 words.push_back(word);
                 word.clear();
@@ -165,15 +165,22 @@ void printCurrentDir() {
 
 void changeDirectory(vector<string> &args) {
 
-    if (args.size() < 2) return;
-    
-    string dir = args[1] ;
+    string dir ; 
+        
+   if(args.size() == 1) {
+       dir = "empty";
+   }
+   else {
+       dir = args[1] ; 
+   }
+
+
 
 
     char* home = getenv("HOME");
 
     // special ~ -> home 
-    if(dir == "~" || dir.empty()) {
+    if(dir == "~" || dir=="empty") {
         fs::current_path(string(home));
         return ;
     }
