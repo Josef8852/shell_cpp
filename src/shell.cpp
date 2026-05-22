@@ -24,43 +24,45 @@ string getPath() {
 
 
 void printLine(stringstream &params) {
-    string rest ;
-    getline(params , rest);
+    string line;
+    getline(params, line);
 
+    if (!line.empty() && line[0] == ' ')
+        line.erase(0, 1);
 
+    bool isInsideSingleQuote = false;
+    string word = "";
+    vector<string> words;
 
-    if(!rest.empty() && rest[0] == ' ') {
-        rest.erase(0,1);
+    for (int i = 0; i < line.length(); i++) {
+
+        char curr = line[i];
+
+        if (curr == '\'') {
+            isInsideSingleQuote = !isInsideSingleQuote;
+            continue;
+        }
+
+        if (!isInsideSingleQuote && curr == ' ') {
+            if (!word.empty()) {
+                words.push_back(word);
+                word.clear();
+            }
+        }
+        else {
+            word += curr;
+        }
     }
 
-    bool isInsideSingleQuote = false , lastWasSpace = false  ; 
+    if (!word.empty()) {
+        words.push_back(word);
+    }
 
-    string line = "" ; 
-        
-        for(int i =  0 ; i < rest.length() ; i++) {
+    for (auto &word : words) {
+        cout << word << " ";
+    }
 
-            
-            if(rest[i] == '\'') {
-                isInsideSingleQuote = !isInsideSingleQuote ;
-               continue ;  
-            }
-
-            if(rest[i] == ' ' && !isInsideSingleQuote) {
-                if(!lastWasSpace) {
-                    line += ' ';
-                    lastWasSpace = true ; 
-                }
-            }
-            else {
-                line += rest[i] ; 
-                lastWasSpace = false ;
-            }
-        
-    
-}
-
-        cout << line << endl ; 
-        
+    cout << endl;
 }
 
 
