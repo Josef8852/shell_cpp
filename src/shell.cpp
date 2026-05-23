@@ -36,7 +36,13 @@ vector<string> parseLine(const string &input) {
             continue ; 
         }
 
-        if(c == '\\' && !isInsideSingleQuote && !isInsideDoubleQuotes) {
+        if(isEscaping && isInsideDoubleQuotes) {
+            word += c ;
+            isEscaping = false ; 
+            continue; 
+        }
+
+        if(c == '\\' && !isInsideSingleQuote) {
             isEscaping = true ; 
             continue ; 
         }
