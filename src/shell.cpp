@@ -26,9 +26,20 @@ string getPath() {
 vector<string> parseLine(const string &input) {
     vector<string> words;
     string word;
-    bool isInsideSingleQuote = false , isInsideDoubleQuotes = false;
+    bool isInsideSingleQuote = false , isInsideDoubleQuotes = false , isEscaping = false;
 
     for (char c : input) {
+
+        if(isEscaping) {
+            word += c ; 
+            isEscaping = false ;
+            continue ; 
+        }
+
+        if(c == '\\' && !isInsideSingleQuote && !isInsideDoubleQuotes) {
+            isEscaping = true ; 
+            continue ; 
+        }
 
         if (c == '\'' && !isInsideDoubleQuotes) {
             isInsideSingleQuote = !isInsideSingleQuote;
@@ -125,8 +136,6 @@ void handleTypeCommand(vector<string> &args){
 
 
 void executeProgram(const string &fullPath , vector<string> &args) {
-
-   
 
     vector<char*> argv ; 
 
