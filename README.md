@@ -1,34 +1,41 @@
 [![progress-banner](https://backend.codecrafters.io/progress/shell/ea2824aa-a592-49a4-ac6c-b0f1c2a2f61d)](https://app.codecrafters.io/users/codecrafters-bot?r=2qF)
 
-This is a starting point for C++ solutions to the
-["Build Your Own Shell" Challenge](https://app.codecrafters.io/courses/shell/overview).
+# Build Your Own Shell — C++
 
-In this challenge, you'll build your own POSIX compliant shell that's capable of
-interpreting shell commands, running external programs and builtin commands like
-cd, pwd, echo and more. Along the way, you'll learn about shell command parsing,
-REPLs, builtin commands, and more.
+A POSIX-compliant shell built in C++ as part of the [CodeCrafters "Build Your Own Shell"](https://app.codecrafters.io/courses/shell/overview) challenge.
 
-**Note**: If you're viewing this repo on GitHub, head over to
-[codecrafters.io](https://codecrafters.io) to try the challenge.
+## Features
 
-# Passing the first stage
+- **REPL loop** — reads, parses, and executes commands interactively
+- **Built-in commands** — `echo`, `exit`, `pwd`, `cd`, `type`
+- **External program execution** — resolves executables from `$PATH` and runs them via `fork`/`execv`
+- **Quoting** — single quotes, double quotes, and backslash escaping
+- **Stdout redirection** — `>` and `1>` operators
+- **Home directory** — `cd ~` and bare `cd` navigate to `$HOME`
 
-The entry point for your `shell` implementation is in `src/main.cpp`. Study and
-uncomment the relevant code, then run the command below to execute the tests on
-our servers:
+## Project Structure
+
+```
+src/
+  main.cpp      # entry point
+  shell.h       # Shell class declaration
+  shell.cpp     # Shell class implementation
+```
+
+## Build & Run
+
+Requires `cmake` and a C++17-capable compiler.
+
+```sh
+# Build
+cmake -S . -B build && cmake --build build
+
+# Run
+./your_program.sh
+```
+
+## Submit to CodeCrafters
 
 ```sh
 codecrafters submit
 ```
-
-Time to move on to the next stage!
-
-# Stage 2 & beyond
-
-Note: This section is for stages 2 and beyond.
-
-1. Ensure you have `cmake` installed locally
-1. Run `./your_program.sh` to run your program, which is implemented in
-   `src/main.cpp`.
-1. Run `codecrafters submit` to submit your solution to CodeCrafters. Test
-   output will be streamed to your terminal.
