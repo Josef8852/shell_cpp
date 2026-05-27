@@ -1,6 +1,10 @@
 #include "shell.h"
 
 
+
+
+
+
 using namespace std ;
 
 namespace fs = filesystem;
@@ -20,21 +24,24 @@ void Shell::run() {
   
         getline(cin , line) ;
   
-        vector<string> args = parseLine(line);
+        ParsedCommand cmd = parseLine(line);
 
-        if(args.empty()) continue;
+        if(cmd.args.empty()) continue;
 
-        string command = args[0] ;
+        string command = cmd.args[0] ;
+
+        int savedStdoutFd = applyRedirect(cmd);
   
         if(command == "exit") break ;
+            
   
-        else if(command == "echo") printLine(args);
+        else if(command == "echo") printLine(cmd.args);
   
         else if(command == "pwd") printCurrentDir() ;
   
-        else if(command == "type")  handleTypeCommand(args);
+        else if(command == "type")  handleTypeCommand(cmd.args);
   
-        else if(command == "cd") changeDirectory(args);
+        else if(command == "cd") changeDirectory(cmd.args);
         
         else {
   
@@ -42,13 +49,15 @@ void Shell::run() {
             
             if(!fullPath.empty()) {
   
-                executeProgram(fullPath, args) ;
+                executeProgram(fullPath, cmd.args) ;
             }
             else {
                 cout << command << ": command not found" << endl ;
             }
         }
-  
+
+        restoreRedirect(savedStdoutFd);
+        
     }
 }
 
@@ -63,11 +72,12 @@ string Shell::getPath() {
 
 
 
-vector<string> Shell::parseLine(const string &input) {
+Shell::ParsedCommand Shell::parseLine(const string &input) {
     vector<string> words;
     string word;
     bool isInsideSingleQuote = false , isInsideDoubleQuotes = false , isEscaping = false;
 
+    // Quoting
     for (char c : input) {
 
         if(isEscaping) {
@@ -106,7 +116,30 @@ vector<string> Shell::parseLine(const string &input) {
         words.push_back(word);
     }
 
-    return words;
+
+    
+    // Parse full command
+    ParsedCommand result ; 
+
+    for(size_t i = 0 ; i < words.size() ;i++) {
+        if(words[i] == ">" || words[i] == "1>") {
+            result.redirectStdout = true ; 
+
+            if(i+1 < words.size()) {
+                result.redirectFile = words[i+1] ;
+                i++ ;   
+            } 
+
+
+            continue ; 
+            
+        }
+
+        result.args.push_back(words[i]);
+    }
+
+
+    return result ; 
 }
 
 
@@ -243,5 +276,37 @@ void Shell::changeDirectory(vector<string> &args) {
     else {
        cout << "cd" << ": " << dir << ": No such file or directory" << endl ;
    }
+    
+}
+
+
+
+int Shell::applyRedirect(const ParsedCommand &cmd) {
+
+    if(cmd.redirectStdout && !cmd.redirectFile.empty()) {
+        int fd = open(cmd.redirectFile.c_str() ,O_WRONLY | O_CREAT | O_TRUNC, 0644 );
+
+        if(fd<0) {
+            perror("Failed to open the file") ;
+            exit(1) ;
+            return -1 ;
+        }
+
+        int savedStdFd = dup(STDOUT_FILENO);
+        dup2(fd, STDOUT_FILENO);
+        close(fd);
+        return savedStdFd ;
+    }
+    
+    return -1 ;
+}
+
+
+void Shell::restoreRedirect(int savedStdoutFd) {
+
+    if(savedStdoutFd >= 0) {
+        dup2(savedStdoutFd ,STDOUT_FILENO);
+        close(savedStdoutFd);
+    }
     
 }
