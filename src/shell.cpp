@@ -1,27 +1,69 @@
 #include "shell.h"
 
 
+using namespace std ;
+
+namespace fs = filesystem;
 
 
-string PATH = getPath();
 
-unordered_set<string> builtins = {
-    "echo",
-    "exit",
-    "type",  
-    "pwd" , 
-    "cd"
-};
+Shell::Shell() {}
 
 
-string getPath() {
+void Shell::run() {
+    
+    while(true) {
+  
+        cout << PS1 ;
+  
+        string line ;
+  
+        getline(cin , line) ;
+  
+        vector<string> args = parseLine(line);
+
+        if(args.empty()) continue;
+
+        string command = args[0] ;
+  
+        if(command == "exit") break ;
+  
+        else if(command == "echo") printLine(args);
+  
+        else if(command == "pwd") printCurrentDir() ;
+  
+        else if(command == "type")  handleTypeCommand(args);
+  
+        else if(command == "cd") changeDirectory(args);
+        
+        else {
+  
+            string fullPath = findExecutableInPath(PATH, command) ;
+            
+            if(!fullPath.empty()) {
+  
+                executeProgram(fullPath, args) ;
+            }
+            else {
+                cout << command << ": command not found" << endl ;
+            }
+        }
+  
+    }
+}
+
+
+
+
+
+string Shell::getPath() {
     char* p = getenv("PATH");
     return p ? string(p) : "";
 }
 
 
 
-vector<string> parseLine(const string &input) {
+vector<string> Shell::parseLine(const string &input) {
     vector<string> words;
     string word;
     bool isInsideSingleQuote = false , isInsideDoubleQuotes = false , isEscaping = false;
@@ -68,10 +110,11 @@ vector<string> parseLine(const string &input) {
 }
 
 
-void printLine(vector<string> &args) {
+void Shell::printLine(vector<string> &args) {
 
-    for(int i = 1 ; i < args.size() ; i++) {
-        cout << args[i] << " ";
+    for(size_t i = 1 ; i < args.size() ; i++) {
+        if(i > 1) cout << " ";
+        cout << args[i] ;
     }
 
     cout << endl ; 
@@ -79,7 +122,7 @@ void printLine(vector<string> &args) {
 }
 
 
-string findExecutableInPath(const string &path , const string &arg) {
+string Shell::findExecutableInPath(const string &path , const string &arg) {
 
     string dir ; 
 
@@ -104,11 +147,11 @@ string findExecutableInPath(const string &path , const string &arg) {
 
 
 
-void handleTypeCommand(vector<string> &args){
+void Shell::handleTypeCommand(vector<string> &args){
 
 
     
-     for(int i = 1 ; i < args.size() ; i++){
+     for(size_t i = 1 ; i < args.size() ; i++){
 
          string arg = args[i] ; 
          
@@ -133,7 +176,7 @@ void handleTypeCommand(vector<string> &args){
 }
 
 
-void executeProgram(const string &fullPath , vector<string> &args) {
+void Shell::executeProgram(const string &fullPath , vector<string> &args) {
 
     vector<char*> argv ; 
 
@@ -171,30 +214,29 @@ void executeProgram(const string &fullPath , vector<string> &args) {
 }
 
 
-void printCurrentDir() {
+void Shell::printCurrentDir() {
     cout << fs::current_path().string() << endl ; 
 }
 
-void changeDirectory(vector<string> &args) {
+void Shell::changeDirectory(vector<string> &args) {
 
-    string dir ; 
-        
-   if(args.size() == 1) {
-       dir = "empty";
-   }
-   else {
-       dir = args[1] ; 
-   }
+  
 
     char* home = getenv("HOME");
 
+    if(!home) {
+        cout << "cd: Home not set" << endl ;
+        return  ;
+    }
+
     // special ~ -> home 
-    if(dir == "~" || dir=="empty") {
+    if(args.size() == 1 || args[1] == "~") {
         fs::current_path(string(home));
         return ;
     }
 
-
+    string dir = args[1];
+    
     if(fs::exists(dir) && fs::is_directory(dir)) {
        fs::current_path(dir) ;
    }
