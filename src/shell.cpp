@@ -292,8 +292,8 @@ int Shell::applyRedirect(const ParsedCommand &cmd) {
             return -1 ;
         }
 
-        int savedStdFd = dup(STDOUT_FILENO);
-        dup2(fd, STDOUT_FILENO);
+        int savedStdFd = dup(STDOUT_FILENO); // save to get back to the terminal 
+        dup2(fd, STDOUT_FILENO); // point stdout to file
         close(fd);
         return savedStdFd ;
     }
@@ -305,7 +305,7 @@ int Shell::applyRedirect(const ParsedCommand &cmd) {
 void Shell::restoreRedirect(int savedStdoutFd) {
 
     if(savedStdoutFd >= 0) {
-        dup2(savedStdoutFd ,STDOUT_FILENO);
+        dup2(savedStdoutFd ,STDOUT_FILENO); // go back to terminal 
         close(savedStdoutFd);
     }
     
