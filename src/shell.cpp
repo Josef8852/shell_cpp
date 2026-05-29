@@ -1,5 +1,5 @@
 #include "shell.h"
-#include <unistd.h>
+
 
 
 
@@ -126,7 +126,7 @@ Shell::ParsedCommand Shell::parseLine(const string &input) {
             result.redirectStdout = true ; 
 
             if(i+1 < words.size()) {
-                result.redirectFile = words[i+1] ;
+                result.redirectStdoutFile = words[i+1] ;
                 i++ ;   
             } 
 
@@ -290,36 +290,30 @@ void Shell::changeDirectory(vector<string> &args) {
 }
 
 
+int Shell::redirectFile(const string &file , int target) {
+    int fd = open(file.c_str() ,O_WRONLY | O_CREAT | O_TRUNC, 0644 );
+
+    if(fd<0) {
+        perror("Failed to open the file") ;
+        exit(1) ;
+    }
+
+    int savedFd = dup(target); // save to get back to the terminal 
+    dup2(fd, target); // point target to file
+    close(fd);
+    return savedFd ;
+}
 
 Shell::SavedFds Shell::applyRedirect(const ParsedCommand &cmd) {
 
     SavedFds fds ; 
     
-    if(cmd.redirectStdout && !cmd.redirectFile.empty()) {
-        int fd = open(cmd.redirectFile.c_str() ,O_WRONLY | O_CREAT | O_TRUNC, 0644 );
-
-        if(fd<0) {
-            perror("Failed to open the file") ;
-            exit(1) ;
-        }
-
-        fds.savedStdout = dup(STDOUT_FILENO); // save to get back to the terminal 
-        dup2(fd, STDOUT_FILENO); // point stdout to file
-        close(fd);
-
+    if(cmd.redirectStdout && !cmd.redirectStdoutFile.empty()) {
+        fds.savedStdout = redirectFile(cmd.redirectStdoutFile, STDOUT_FILENO);
     }
 
     if(cmd.redirectStderr && !cmd.redirectStderrFile.empty()) {
-        int fd = open(cmd.redirectStderrFile.c_str() ,O_WRONLY | O_CREAT | O_TRUNC, 0644 );
-
-        if(fd<0) {
-            perror("Failed to open the file") ;
-            exit(1) ;
-        }
-
-        fds.savedStderr = dup(STDERR_FILENO); 
-        dup2(fd, STDERR_FILENO); 
-        close(fd);
+        fds.savedStderr = redirectFile(cmd.redirectStderrFile, STDERR_FILENO);
     }
     
     return fds ;
