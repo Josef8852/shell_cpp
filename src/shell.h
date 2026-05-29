@@ -12,6 +12,7 @@
 #include <algorithm>
 #include <cstddef>
 #include <fcntl.h>
+#include <readline/readline.h>
 
 
 
@@ -25,8 +26,8 @@ class Shell {
 
         private:
 
-            std::string PS1 = "$ ";
             std::string PATH = getPath();
+            
             inline static std::unordered_set<std::string> builtins = {
                 "echo",
                 "exit",

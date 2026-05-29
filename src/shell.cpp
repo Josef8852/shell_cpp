@@ -5,18 +5,17 @@ using namespace std;
 namespace fs = filesystem;
 
 
-Shell::Shell() {}
+Shell::Shell() {
+
+}
 
 
 void Shell::run() {
 
     while(true) {
 
-        cout << PS1;
 
-        string line;
-
-        getline(cin, line);
+        char* line = readline("$ ");
 
         ParsedCommand cmd = parseLine(line);
 
@@ -49,6 +48,7 @@ void Shell::run() {
         }
 
         restoreRedirect(fds);
+        free(line); 
     }
 }
 
