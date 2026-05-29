@@ -136,7 +136,7 @@ Shell::ParsedCommand Shell::parseLine(const string &input) {
             
         }
 
-        if(words[i] == "2>") {
+        if(words[i] == "2>" || words[i] == "2>>") {
             result.redirectStderr = true ;
 
             if(i+1 < words.size()){
