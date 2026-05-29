@@ -4,13 +4,18 @@
 
 A POSIX-compliant shell built in C++ as part of the [CodeCrafters "Build Your Own Shell"](https://app.codecrafters.io/courses/shell/overview) challenge.
 
+## Technologies
+
+![Skills](https://builder.syvixor.com/?perline=15&i=cpp,cmake,bash)
+
 ## Features
 
 - **REPL loop** — reads, parses, and executes commands interactively
 - **Built-in commands** — `echo`, `exit`, `pwd`, `cd`, `type`
 - **External program execution** — resolves executables from `$PATH` and runs them via `fork`/`execv`
 - **Quoting** — single quotes, double quotes, and backslash escaping
-- **Stdout redirection** — `>` and `1>` operators
+- **Stdout redirection** — `>` / `1>` (truncate) and `>>` / `1>>` (append) operators
+- **Stderr redirection** — `2>` (truncate) and `2>>` (append) operators
 - **Home directory** — `cd ~` and bare `cd` navigate to `$HOME`
 
 ## Project Structure
