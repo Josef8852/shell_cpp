@@ -310,7 +310,7 @@ Shell::SavedFds Shell::applyRedirect(const ParsedCommand &cmd) {
     }
 
     if(cmd.redirectStderr && !cmd.redirectStderrFile.empty()) {
-        int fd = open(cmd.redirectFile.c_str() ,O_WRONLY | O_CREAT | O_TRUNC, 0644 );
+        int fd = open(cmd.redirectStderrFile.c_str() ,O_WRONLY | O_CREAT | O_TRUNC, 0644 );
 
         if(fd<0) {
             perror("Failed to open the file") ;
