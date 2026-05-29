@@ -39,7 +39,14 @@ class Shell {
              struct ParsedCommand {
                 std::vector<std::string> args ; 
                 std::string redirectFile ; 
+                std::string redirectStderrFile ;
                 bool redirectStdout = false ;
+                bool redirectStderr = false ;
+            };
+
+            struct SavedFds {
+                int savedStdout = -1 ; 
+                int savedStderr = -1 ;
             };
 
             static std::string getPath();
@@ -50,7 +57,7 @@ class Shell {
             void executeProgram(const std::string &fullPath , std::vector<std::string> &args);
             void printCurrentDir() ;
             void changeDirectory(std::vector<std::string> &args);   
-            int applyRedirect(const ParsedCommand &cmd);
-            void restoreRedirect(int savedStdoutFd) ;
+            SavedFds applyRedirect(const ParsedCommand &cmd);
+            void restoreRedirect(SavedFds fds ) ;
 };
 

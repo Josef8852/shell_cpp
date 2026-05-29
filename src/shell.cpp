@@ -1,4 +1,5 @@
 #include "shell.h"
+#include <unistd.h>
 
 
 
@@ -30,11 +31,10 @@ void Shell::run() {
 
         string command = cmd.args[0] ;
 
-        int savedStdoutFd = applyRedirect(cmd);
+        SavedFds fds = applyRedirect(cmd);
   
         if(command == "exit") break ;
             
-  
         else if(command == "echo") printLine(cmd.args);
   
         else if(command == "pwd") printCurrentDir() ;
@@ -56,7 +56,7 @@ void Shell::run() {
             }
         }
 
-        restoreRedirect(savedStdoutFd);
+        restoreRedirect(fds);
         
     }
 }
@@ -133,6 +133,16 @@ Shell::ParsedCommand Shell::parseLine(const string &input) {
 
             continue ; 
             
+        }
+
+        if(words[i] == "2>") {
+            result.redirectStderr = true ;
+
+            if(i+1 < words.size()){
+                result.redirectStderrFile = words[i+1];
+                i++;
+            }   
+            continue; 
         }
 
         result.args.push_back(words[i]);
@@ -281,32 +291,51 @@ void Shell::changeDirectory(vector<string> &args) {
 
 
 
-int Shell::applyRedirect(const ParsedCommand &cmd) {
+Shell::SavedFds Shell::applyRedirect(const ParsedCommand &cmd) {
 
+    SavedFds fds ; 
+    
     if(cmd.redirectStdout && !cmd.redirectFile.empty()) {
         int fd = open(cmd.redirectFile.c_str() ,O_WRONLY | O_CREAT | O_TRUNC, 0644 );
 
         if(fd<0) {
             perror("Failed to open the file") ;
             exit(1) ;
-            return -1 ;
         }
 
-        int savedStdFd = dup(STDOUT_FILENO); // save to get back to the terminal 
+        fds.savedStdout = dup(STDOUT_FILENO); // save to get back to the terminal 
         dup2(fd, STDOUT_FILENO); // point stdout to file
         close(fd);
-        return savedStdFd ;
+
+    }
+
+    if(cmd.redirectStderr && !cmd.redirectFile.empty()) {
+        int fd = open(cmd.redirectFile.c_str() ,O_WRONLY | O_CREAT | O_TRUNC, 0644 );
+
+        if(fd<0) {
+            perror("Failed to open the file") ;
+            exit(1) ;
+        }
+
+        fds.savedStderr = dup(STDERR_FILENO); 
+        dup2(fd, STDERR_FILENO); 
+        close(fd);
     }
     
-    return -1 ;
+    return fds ;
 }
 
 
-void Shell::restoreRedirect(int savedStdoutFd) {
+void Shell::restoreRedirect(SavedFds fds) {
 
-    if(savedStdoutFd >= 0) {
-        dup2(savedStdoutFd ,STDOUT_FILENO); // go back to terminal 
-        close(savedStdoutFd);
+    if( fds.savedStdout>= 0) {
+        dup2(fds.savedStdout ,STDOUT_FILENO); // go back to terminal 
+        close(fds.savedStdout);
+    }
+
+    if( fds.savedStderr>= 0) {
+        dup2(fds.savedStderr ,STDERR_FILENO); 
+        close(fds.savedStderr);
     }
     
 }
