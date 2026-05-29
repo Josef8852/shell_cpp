@@ -1,4 +1,5 @@
 #include "shell.h"
+#include <fcntl.h>
 
 
 
@@ -122,7 +123,7 @@ Shell::ParsedCommand Shell::parseLine(const string &input) {
     ParsedCommand result ; 
 
     for(size_t i = 0 ; i < words.size() ;i++) {
-        if(words[i] == ">" || words[i] == "1>") {
+        if(words[i] == ">" || words[i] == "1>" || words[i] == ">>" || words[i] == "1>>") {
             result.redirectStdout = true ; 
 
             if(i+1 < words.size()) {
@@ -291,7 +292,7 @@ void Shell::changeDirectory(vector<string> &args) {
 
 
 int Shell::redirectFile(const string &file , int target) {
-    int fd = open(file.c_str() ,O_WRONLY | O_CREAT | O_TRUNC, 0644 );
+    int fd = open(file.c_str() ,O_WRONLY | O_CREAT | O_APPEND, 0644 );
 
     if(fd<0) {
         perror("Failed to open the file") ;
