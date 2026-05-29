@@ -1,4 +1,5 @@
 #include "shell.h"
+#include <fcntl.h>
 
 
 
@@ -124,8 +125,9 @@ Shell::ParsedCommand Shell::parseLine(const string &input) {
 
     for(size_t i = 0 ; i < words.size() ;i++) {
         if(words[i] == ">" || words[i] == "1>" || words[i] == ">>" || words[i] == "1>>") {
+            
             result.redirectStdout = true ; 
-
+            result.appendStdout = (words[i] == ">>" || words[i] == "1>>");
             if(i+1 < words.size()) {
                 result.redirectStdoutFile = words[i+1] ;
                 i++ ;   
@@ -138,7 +140,7 @@ Shell::ParsedCommand Shell::parseLine(const string &input) {
 
         if(words[i] == "2>" || words[i] == "2>>") {
             result.redirectStderr = true ;
-
+            result.appendStderr = words[i] == "2>>" ;
             if(i+1 < words.size()){
                 result.redirectStderrFile = words[i+1];
                 i++;
@@ -291,8 +293,8 @@ void Shell::changeDirectory(vector<string> &args) {
 }
 
 
-int Shell::redirectFile(const string &file , int target) {
-    int fd = open(file.c_str() ,O_WRONLY | O_CREAT | O_APPEND, 0644 );
+int Shell::redirectFile(const string &file , int target , bool append) {
+    int fd = open(file.c_str() ,O_WRONLY | O_CREAT | (append ? O_APPEND : O_TRUNC), 0644 );
 
     if(fd<0) {
         perror("Failed to open the file") ;
@@ -310,11 +312,11 @@ Shell::SavedFds Shell::applyRedirect(const ParsedCommand &cmd) {
     SavedFds fds ; 
     
     if(cmd.redirectStdout && !cmd.redirectStdoutFile.empty()) {
-        fds.savedStdout = redirectFile(cmd.redirectStdoutFile, STDOUT_FILENO);
+        fds.savedStdout = redirectFile(cmd.redirectStdoutFile, STDOUT_FILENO , cmd.appendStdout);
     }
 
     if(cmd.redirectStderr && !cmd.redirectStderrFile.empty()) {
-        fds.savedStderr = redirectFile(cmd.redirectStderrFile, STDERR_FILENO);
+        fds.savedStderr = redirectFile(cmd.redirectStderrFile, STDERR_FILENO ,cmd.appendStderr);
     }
     
     return fds ;

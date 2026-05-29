@@ -42,6 +42,8 @@ class Shell {
                 std::string redirectStderrFile ;
                 bool redirectStdout = false ;
                 bool redirectStderr = false ;
+                bool appendStdout = false;
+                bool appendStderr = false;
             };
 
             struct SavedFds {
@@ -57,7 +59,7 @@ class Shell {
             void executeProgram(const std::string &fullPath , std::vector<std::string> &args);
             void printCurrentDir() ;
             void changeDirectory(std::vector<std::string> &args);
-            int redirectFile(const std::string &file , int target);
+            int redirectFile(const std::string &file , int target , bool append);
             SavedFds applyRedirect(const ParsedCommand &cmd);
             void restoreRedirect(SavedFds fds ) ;
 };
