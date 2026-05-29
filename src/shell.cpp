@@ -24,11 +24,11 @@ void Shell::run() {
 
         string command = cmd.args[0];
 
-        SavedFds fds = applyRedirect(cmd);
-
         if(command == "exit") break;
 
-        else if(command == "echo") printLine(cmd.args);
+        SavedFds fds = applyRedirect(cmd);
+
+        if(command == "echo") printLine(cmd.args);
 
         else if(command == "pwd") printCurrentDir();
 
