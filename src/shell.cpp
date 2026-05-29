@@ -309,7 +309,7 @@ Shell::SavedFds Shell::applyRedirect(const ParsedCommand &cmd) {
 
     }
 
-    if(cmd.redirectStderr && !cmd.redirectFile.empty()) {
+    if(cmd.redirectStderr && !cmd.redirectStderrFile.empty()) {
         int fd = open(cmd.redirectFile.c_str() ,O_WRONLY | O_CREAT | O_TRUNC, 0644 );
 
         if(fd<0) {
