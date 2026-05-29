@@ -62,5 +62,6 @@ class Shell {
             int redirectFile(const std::string &file, int target, bool append);
             SavedFds applyRedirect(const ParsedCommand &cmd);
             void restoreRedirect(SavedFds fds);
+            static char* Completer(const char* text , int state) ;
 };
 

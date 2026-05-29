@@ -1,12 +1,14 @@
 #include "shell.h"
 
+
 using namespace std;
 
 namespace fs = filesystem;
 
 
 Shell::Shell() {
-
+    // tell readline to use our custom completer instead of the default file/dir completer
+    rl_completion_entry_function = Completer;
 }
 
 
@@ -282,4 +284,28 @@ void Shell::restoreRedirect(SavedFds fds) {
         dup2(fds.savedStderr, STDERR_FILENO);
         close(fds.savedStderr);
     }
+}
+
+
+char* Shell::Completer(const char* text , int state) {
+    // store matching builtins and curr position
+    static vector<string> matches ;
+    static size_t matchingIndex ; 
+
+    if(state == 0) {
+        matchingIndex = 0 ; 
+        matches.clear() ; 
+
+        for(auto &builtin : builtins) {
+            if(builtin.rfind(text, 0) == 0) {
+                matches.push_back(builtin);
+            }
+        }
+    }
+    
+    if(matchingIndex < matches.size()) {
+        return strdup(matches[matchingIndex++].c_str());
+    }   
+    // default completer provided by readline
+    return rl_filename_completion_function(text, state);
 }
