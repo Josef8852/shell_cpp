@@ -18,16 +18,15 @@
 
 class Shell {
 
-        public : 
+        public:
 
-        Shell() ;
-        void run() ;
+        Shell();
+        void run();
 
-        
-        private :
+        private:
 
-            std::string PS1 = "$ " ;
-            std::string PATH = getPath() ; 
+            std::string PS1 = "$ ";
+            std::string PATH = getPath();
             inline static std::unordered_set<std::string> builtins = {
                 "echo",
                 "exit",
@@ -54,13 +53,13 @@ class Shell {
             static std::string getPath();
             void printLine(std::vector<std::string> &args);
             ParsedCommand parseLine(const std::string &input);
-            std::string findExecutableInPath(const std::string &path , const std::string &arg);
-            void handleTypeCommand(std::vector<std::string>&args);
-            void executeProgram(const std::string &fullPath , std::vector<std::string> &args);
-            void printCurrentDir() ;
+            std::string findExecutableInPath(const std::string &path, const std::string &arg);
+            void handleTypeCommand(std::vector<std::string> &args);
+            void executeProgram(const std::string &fullPath, std::vector<std::string> &args);
+            void printCurrentDir();
             void changeDirectory(std::vector<std::string> &args);
-            int redirectFile(const std::string &file , int target , bool append);
+            int redirectFile(const std::string &file, int target, bool append);
             SavedFds applyRedirect(const ParsedCommand &cmd);
-            void restoreRedirect(SavedFds fds ) ;
+            void restoreRedirect(SavedFds fds);
 };
 
