@@ -6,7 +6,7 @@ A POSIX-compliant shell built in C++ as part of the [CodeCrafters "Build Your Ow
 
 ## Technologies
 
-![Skills](https://builder.syvixor.com/?perline=15&i=cpp,cmake,bash)
+<img src="https://skills.syvixor.com/api/icons?i=cpp,cmake,bash"/>
 
 ## Features
 
