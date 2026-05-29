@@ -1,4 +1,7 @@
 #include "shell.h"
+#include <filesystem>
+#include <sstream>
+#include <unistd.h>
 
 
 using namespace std;
@@ -292,6 +295,7 @@ char* Shell::Completer(const char* text , int state) {
     static vector<string> matches ;
     static size_t matchingIndex ; 
 
+    // fresh <TAB> press
     if(state == 0) {
         matchingIndex = 0 ; 
         matches.clear() ; 
@@ -301,6 +305,27 @@ char* Shell::Completer(const char* text , int state) {
                 matches.push_back(builtin);
             }
         }
+
+        // auto complete for executables
+        stringstream dirs(PATH) ;
+        string dir ; 
+
+        while(getline(dirs , dir , ':')) {
+
+            try {
+                for(auto &entry : fs::directory_iterator(dir)) {
+                       // Get just the filename (e.g. "gcc" from "/usr/bin/gcc")
+                    string filename = entry.path().filename().string() ; 
+                    if(filename.rfind(text,0) == 0 && access(entry.path().c_str() , X_OK) == 0) {
+                        matches.push_back(filename);
+                    }
+                }
+            }
+             // Silently skip directories that can't be read
+            catch(...){}
+            
+        }
+        
     }
     
     if(matchingIndex < matches.size()) {

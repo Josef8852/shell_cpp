@@ -26,7 +26,9 @@ class Shell {
 
         private:
 
-            std::string PATH = getPath();
+            
+            static std::string getPath();
+            inline static std::string PATH = getPath();
             
             inline static std::unordered_set<std::string> builtins = {
                 "echo",
@@ -51,7 +53,6 @@ class Shell {
                 int savedStderr = -1 ;
             };
 
-            static std::string getPath();
             void printLine(std::vector<std::string> &args);
             ParsedCommand parseLine(const std::string &input);
             std::string findExecutableInPath(const std::string &path, const std::string &arg);
