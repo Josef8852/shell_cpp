@@ -35,7 +35,8 @@ class Shell {
                 "exit",
                 "type",  
                 "pwd" , 
-                "cd"
+                "cd" , 
+                "complete" ,
             };
 
              struct ParsedCommand {
