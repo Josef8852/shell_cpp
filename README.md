@@ -6,8 +6,11 @@ A POSIX-compliant shell built in C++ as part of the [CodeCrafters "Build Your Ow
 
 ## Technologies
 
-<img src="https://skills.syvixor.com/api/icons?i=cpp,cmake,bash"/>
-<img src="https://img.shields.io/badge/GNU%20readline-8.x-A42E2B?logo=gnubash&logoColor=white" alt="readline"/>
+
+<p>
+  <img src="https://skills.syvixor.com/api/icons?i=cpp,cmake,bash"/>
+  <img src="https://img.shields.io/badge/GNU%20readline-8.x-A42E2B?logo=gnubash&logoColor=white" alt="readline" height="40"/>
+</p>
 
 ## Features
 
