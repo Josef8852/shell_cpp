@@ -13,6 +13,8 @@ Shell::Shell() {
     // tell readline to use our custom completer instead of the default file/dir completer
     rl_completion_entry_function = Completer;
     rl_bind_key('\t', rl_complete);
+    rl_attempted_completion_function = nullptr;
+    rl_completer_word_break_characters = (char*)" \t\n";
 }
 
 
