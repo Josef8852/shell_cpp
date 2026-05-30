@@ -1,4 +1,5 @@
 #include "shell.h"
+#include <cstddef>
 
 
 
@@ -301,6 +302,11 @@ char* Shell::Completer(const char* text, int state) {
 
         string prefix(text);
 
+        size_t slash = prefix.find_last_of('/');
+
+        string parent = (slash == string::npos) ? "" : prefix.substr(0,slash+1);
+        string rest = (slash == string::npos) ? prefix  : prefix.substr(slash+1);
+
         // Only complete commands (builtins + PATH) when typing the first word.
         // An empty prefix means we're completing an argument -> files/dirs only.
         if(!prefix.empty()) {
@@ -330,7 +336,7 @@ char* Shell::Completer(const char* text, int state) {
 
         // directories in current path 
         try {
-            for(auto &entry : fs::directory_iterator(fs::current_path())) {
+            for(auto &entry : fs::directory_iterator(parent.empty() ? "." : parent)) {
                 if(fs::is_directory(entry)) {
                     string dirname = entry.path().filename().string();
                     if(dirname.rfind(prefix, 0) == 0) {
@@ -343,7 +349,7 @@ char* Shell::Completer(const char* text, int state) {
 
 
         if(matches.size() == 1 && !matches[0].empty() && matches[0].back() == '/') {
-                 rl_completion_suppress_append = 1; // desiable appending add no space it its a dir
+                 rl_completion_suppress_append = 1; // desiable appending if its a dir
              } else {
                  rl_completion_suppress_append = 0; // allow apending 
                  rl_completion_append_character = ' '; // apend space
