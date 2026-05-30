@@ -291,61 +291,58 @@ void Shell::restoreRedirect(SavedFds fds) {
 }
 
 
-char* Shell::Completer(const char* text , int state) {
-    
-    // store matching builtins and curr position
-    static vector<string> matches ;
-    static size_t matchingIndex ; 
+char* Shell::Completer(const char* text, int state) {
 
+    static vector<string> matches;
+    static size_t matchingIndex;
 
-    // fresh <TAB> press
     if(state == 0) {
-        matchingIndex = 0 ; 
-        matches.clear() ; 
+        matchingIndex = 0;
+        matches.clear();
 
-        for(auto &builtin : builtins) {
-            if(builtin.rfind(text, 0) == 0) {
-                matches.push_back(builtin);
-            }
-        }
+        string prefix(text);
 
-        // auto complete for executables
-        stringstream dirs(PATH) ;
-        string dir ; 
+        // Only complete commands (builtins + PATH) when typing the first word.
+        // An empty prefix means we're completing an argument -> files/dirs only.
+        if(!prefix.empty()) {
 
-        while(getline(dirs , dir , ':')) {
-
-            try {
-                for(auto &entry : fs::directory_iterator(dir)) {
-                       // Get just the filename (e.g. "gcc" from "/usr/bin/gcc")
-                    string filename = entry.path().filename().string() ; 
-                    if(filename.rfind(text,0) == 0 && access(entry.path().c_str() , X_OK) == 0 && !fs::is_directory(entry.path())) {
-                        matches.push_back(filename);
-                    }
+            for(auto &builtin : builtins) {
+                if(builtin.rfind(prefix, 0) == 0) {
+                    matches.push_back(builtin);
                 }
             }
-             // Silently skip directories that can't be read
-            catch(...){}
+
+            stringstream dirs(PATH);
+            string dir;
+            while(getline(dirs, dir, ':')) {
+                try {
+                    for(auto &entry : fs::directory_iterator(dir)) {
+                        string filename = entry.path().filename().string();
+                        if(filename.rfind(prefix, 0) == 0 &&
+                           access(entry.path().c_str(), X_OK) == 0 &&
+                           !fs::is_directory(entry.path())) {
+                            matches.push_back(filename);
+                        }
+                    }
+                }
+                catch(...) {}
+            }
         }
 
-
-        
-        // for dirs in current path
+        // directories in current path 
         try {
             for(auto &entry : fs::directory_iterator(fs::current_path())) {
                 if(fs::is_directory(entry)) {
-                    string dirname = entry.path().filename().string() ; 
-    
-                    if(dirname.rfind(text, 0) == 0 ) {
+                    string dirname = entry.path().filename().string();
+                    if(dirname.rfind(prefix, 0) == 0) {
                         matches.push_back(dirname + "/");
                     }
                 }
             }
         }
         catch(...) {}
-
     }
-    
+
     if(matchingIndex < matches.size()) {
         return strdup(matches[matchingIndex++].c_str());
     }
