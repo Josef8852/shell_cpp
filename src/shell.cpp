@@ -12,7 +12,10 @@ namespace fs = filesystem;
 Shell::Shell() {
     // tell readline to use our custom completer instead of the default file/dir completer
     rl_completion_entry_function = Completer;
-
+    rl_attempted_completion_function = [](const char* text, int start, int end) -> char** {
+         rl_attempted_completion_over = 1;
+         return rl_completion_matches(text, Completer);
+     };
 }
 
 
