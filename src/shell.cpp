@@ -12,7 +12,6 @@ namespace fs = filesystem;
 Shell::Shell() {
     // tell readline to use our custom completer instead of the default file/dir completer
     rl_completion_entry_function = Completer;
-    rl_completion_append_character = '\0'; // remove trailing space from readline
 }
 
 
@@ -341,6 +340,14 @@ char* Shell::Completer(const char* text, int state) {
             }
         }
         catch(...) {}
+
+
+        if(matches.size() == 1 && !matches[0].empty() && matches[0].back() == '/') {
+                 rl_completion_suppress_append = 1; // desiable appending add no space it its a dir
+             } else {
+                 rl_completion_suppress_append = 0; // allow apending 
+                 rl_completion_append_character = ' '; // apend space
+             }
     }
 
     if(matchingIndex < matches.size()) {
