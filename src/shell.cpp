@@ -12,7 +12,7 @@ namespace fs = filesystem;
 Shell::Shell() {
     // tell readline to use our custom completer instead of the default file/dir completer
     rl_completion_entry_function = Completer;
-    rl_completer_word_break_characters = (char*)" \t\n";  // explicit, includes space
+
 }
 
 
@@ -343,7 +343,9 @@ char* Shell::Completer(const char* text , int state) {
             }
         }
         catch(...) {}
- 
+
+        sort(matches.begin(), matches.end());
+        matches.erase(unique(matches.begin(), matches.end()), matches.end());
     }
     
     if(matchingIndex < matches.size()) {
