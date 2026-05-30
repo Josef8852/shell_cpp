@@ -1,7 +1,5 @@
 #include "shell.h"
-#include <filesystem>
-#include <sstream>
-#include <unistd.h>
+
 
 
 using namespace std;
@@ -294,12 +292,11 @@ char* Shell::Completer(const char* text , int state) {
     // store matching builtins and curr position
     static vector<string> matches ;
     static size_t matchingIndex ; 
-    static int filenameState ; 
+
 
     // fresh <TAB> press
     if(state == 0) {
         matchingIndex = 0 ; 
-        filenameState = 0 ;
         matches.clear() ; 
 
         for(auto &builtin : builtins) {
@@ -333,6 +330,5 @@ char* Shell::Completer(const char* text , int state) {
     if(matchingIndex < matches.size()) {
         return strdup(matches[matchingIndex++].c_str());
     }   
-    // default completer provided by readline
-    return rl_filename_completion_function(text, filenameState++);
+    return nullptr ; 
 }
