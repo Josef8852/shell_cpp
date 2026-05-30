@@ -3,6 +3,7 @@
 
 
 
+
 using namespace std;
 
 namespace fs = filesystem;
@@ -291,6 +292,7 @@ void Shell::restoreRedirect(SavedFds fds) {
 
 
 char* Shell::Completer(const char* text , int state) {
+    
     // store matching builtins and curr position
     static vector<string> matches ;
     static size_t matchingIndex ; 
@@ -317,7 +319,7 @@ char* Shell::Completer(const char* text , int state) {
                 for(auto &entry : fs::directory_iterator(dir)) {
                        // Get just the filename (e.g. "gcc" from "/usr/bin/gcc")
                     string filename = entry.path().filename().string() ; 
-                    if(filename.rfind(text,0) == 0 && access(entry.path().c_str() , X_OK) == 0) {
+                    if(filename.rfind(text,0) == 0 && access(entry.path().c_str() , X_OK) == 0 && !fs::is_directory(entry.path())) {
                         matches.push_back(filename);
                     }
                 }
@@ -331,19 +333,21 @@ char* Shell::Completer(const char* text , int state) {
         // for dirs in current path
         try {
             for(auto &entry : fs::directory_iterator(fs::current_path())) {
-                string dirname = entry.path().filename().string() ; 
-
-                if(dirname.rfind(text, 0) == 0 ) {
-                    matches.push_back(dirname + "/");
+                if(fs::is_directory(entry)) {
+                    string dirname = entry.path().filename().string() ; 
+    
+                    if(dirname.rfind(text, 0) == 0 ) {
+                        matches.push_back(dirname + "/");
+                    }
                 }
             }
         }
         catch(...) {}
-        
+ 
     }
     
     if(matchingIndex < matches.size()) {
         return strdup(matches[matchingIndex++].c_str());
-    }   
+    }
     return nullptr ; 
 }
