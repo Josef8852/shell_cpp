@@ -1,5 +1,5 @@
 #include "shell.h"
-#include <filesystem>
+
 
 
 
@@ -323,19 +323,21 @@ char* Shell::Completer(const char* text , int state) {
             }
              // Silently skip directories that can't be read
             catch(...){}
+        }
 
-            // for dirs in current path
-            try {
-                for(auto &entry : fs::directory_iterator(fs::current_path())) {
-                    string dirname = entry.path().filename().string() ; 
 
-                    if(dirname.rfind(text, 0) == 0 ) {
-                        matches.push_back(dirname + "/");
-                    }
+        
+        // for dirs in current path
+        try {
+            for(auto &entry : fs::directory_iterator(fs::current_path())) {
+                string dirname = entry.path().filename().string() ; 
+
+                if(dirname.rfind(text, 0) == 0 ) {
+                    matches.push_back(dirname + "/");
                 }
             }
-            catch(...) {}
         }
+        catch(...) {}
         
     }
     
