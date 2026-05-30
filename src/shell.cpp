@@ -12,8 +12,7 @@ namespace fs = filesystem;
 Shell::Shell() {
     // tell readline to use our custom completer instead of the default file/dir completer
     rl_completion_entry_function = Completer;
-    rl_bind_key('\t', rl_complete);
-    rl_attempted_completion_function = nullptr;
+
 }
 
 
@@ -350,5 +349,5 @@ char* Shell::Completer(const char* text , int state) {
     if(matchingIndex < matches.size()) {
         return strdup(matches[matchingIndex++].c_str());
     }
-    return nullptr ; 
+    return nullptr;
 }
