@@ -1,5 +1,6 @@
 #include "shell.h"
 #include <cstddef>
+#include <locale>
 
 
 
@@ -339,8 +340,8 @@ char* Shell::Completer(const char* text, int state) {
             for(auto &entry : fs::directory_iterator(parent.empty() ? "." : parent)) {
                 if(fs::is_directory(entry)) {
                     string dirname = entry.path().filename().string();
-                    if(dirname.rfind(prefix, 0) == 0) {
-                        matches.push_back(dirname + "/");
+                    if(dirname.rfind(rest, 0) == 0) {
+                        matches.push_back(parent + dirname + "/");
                     }
                 }
             }
