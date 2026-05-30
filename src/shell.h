@@ -14,9 +14,6 @@
 #include <fcntl.h>
 #include <readline/readline.h>
 
-
-
-
 class Shell {
 
         public:

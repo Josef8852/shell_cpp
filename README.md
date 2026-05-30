@@ -11,12 +11,13 @@ A POSIX-compliant shell built in C++ as part of the [CodeCrafters "Build Your Ow
 ## Features
 
 - **REPL loop** — reads, parses, and executes commands interactively
-- **Built-in commands** — `echo`, `exit`, `pwd`, `cd`, `type`
+- **Built-in commands** — `echo`, `exit`, `pwd`, `cd`, `type`, `complete`
 - **External program execution** — resolves executables from `$PATH` and runs them via `fork`/`execv`
 - **Quoting** — single quotes, double quotes, and backslash escaping
 - **Stdout redirection** — `>` / `1>` (truncate) and `>>` / `1>>` (append) operators
 - **Stderr redirection** — `2>` (truncate) and `2>>` (append) operators
 - **Home directory** — `cd ~` and bare `cd` navigate to `$HOME`
+- **Tab completion** — completes built-in commands, `$PATH` executables, and filesystem paths (with trailing `/` for directories)
 
 ## Project Structure
 
@@ -29,7 +30,7 @@ src/
 
 ## Build & Run
 
-Requires `cmake` and a C++17-capable compiler.
+Requires `cmake`, a C++17-capable compiler, and `libreadline-dev`.
 
 ```sh
 # Build

@@ -1,11 +1,5 @@
 #include "shell.h"
 
-
-
-
-
-
-
 using namespace std;
 
 namespace fs = filesystem;
