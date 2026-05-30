@@ -53,6 +53,8 @@ class Shell {
 
             void printLine(std::vector<std::string> &args);
             ParsedCommand parseLine(const std::string &input);
+            std::vector<std::string> tokenize(const std::string &input);
+            ParsedCommand parseRedirects(const std::vector<std::string> &words);
             std::string findExecutableInPath(const std::string &path, const std::string &arg);
             void handleTypeCommand(std::vector<std::string> &args);
             void executeProgram(const std::string &fullPath, std::vector<std::string> &args);

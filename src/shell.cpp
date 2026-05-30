@@ -60,7 +60,7 @@ string Shell::getPath() {
 }
 
 
-Shell::ParsedCommand Shell::parseLine(const string &input) {
+vector<string> Shell::tokenize(const string &input) {
     vector<string> words;
     string word;
     bool isInsideSingleQuote = false, isInsideDoubleQuotes = false, isEscaping = false;
@@ -103,6 +103,11 @@ Shell::ParsedCommand Shell::parseLine(const string &input) {
         words.push_back(word);
     }
 
+    return words ;
+}
+
+
+Shell::ParsedCommand Shell::parseRedirects(const vector<string> &words){
     ParsedCommand result;
 
     for(size_t i = 0; i < words.size(); i++) {
@@ -131,7 +136,11 @@ Shell::ParsedCommand Shell::parseLine(const string &input) {
         result.args.push_back(words[i]);
     }
 
-    return result;
+    return result ; 
+}
+
+Shell::ParsedCommand Shell::parseLine(const string &input) {
+    return parseRedirects(tokenize(input));
 }
 
 
