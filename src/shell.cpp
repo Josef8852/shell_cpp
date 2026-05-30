@@ -11,6 +11,7 @@ namespace fs = filesystem;
 Shell::Shell() {
     // tell readline to use our custom completer instead of the default file/dir completer
     rl_completion_entry_function = Completer;
+    rl_bind_key('\t', rl_complete);
 }
 
 
