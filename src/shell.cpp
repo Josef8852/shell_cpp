@@ -12,7 +12,7 @@ namespace fs = filesystem;
 Shell::Shell() {
     // tell readline to use our custom completer instead of the default file/dir completer
     rl_completion_entry_function = Completer;
-
+    rl_completion_append_character = '\0'; // remove trailing space from readline
 }
 
 
@@ -344,8 +344,6 @@ char* Shell::Completer(const char* text , int state) {
         }
         catch(...) {}
 
-        sort(matches.begin(), matches.end());
-        matches.erase(unique(matches.begin(), matches.end()), matches.end());
     }
     
     if(matchingIndex < matches.size()) {
