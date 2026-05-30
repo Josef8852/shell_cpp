@@ -303,9 +303,13 @@ char* Shell::Completer(const char* text, int state) {
 
         string prefix(text);
 
+        // index of last "/"
         size_t slash = prefix.find_last_of('/');
 
+        // current path + "/"
         string parent = (slash == string::npos) ? "" : prefix.substr(0,slash+1);
+
+        // rest after "/"
         string rest = (slash == string::npos) ? prefix  : prefix.substr(slash+1);
 
         // Only complete commands (builtins + PATH) when typing the first word.
@@ -351,10 +355,11 @@ char* Shell::Completer(const char* text, int state) {
         }
         catch(...) {}
 
-
+        // size is always 1 if we have nested dir completion
         if(matches.size() == 1 && !matches[0].empty() && matches[0].back() == '/') {
                  rl_completion_suppress_append = 1; // desiable appending if its a dir
-             } else {
+        } 
+        else {
                  rl_completion_suppress_append = 0; // allow apending 
                  rl_completion_append_character = ' '; // apend space
              }
