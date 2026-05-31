@@ -36,6 +36,8 @@ void Shell::run() {
 
         else if(command == "cd") changeDirectory(cmd.args);
 
+        else if(command == "complete") handleCompleteCommand(cmd.args);
+
         else {
 
             string fullPath = findExecutableInPath(PATH, command);
@@ -372,4 +374,19 @@ char* Shell::Completer(const char* text, int state) {
         return strdup(matches[matchingIndex++].c_str());
     }
     return nullptr;
+}
+
+
+
+void Shell::handleCompleteCommand(vector<string> &args) {
+
+
+    string flag = args[1];
+
+    string arg = args[2] ; 
+
+    
+    cerr << "complete: " << arg << ": no completion specification" << endl ;
+
+    
 }

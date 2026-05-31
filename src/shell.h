@@ -64,5 +64,6 @@ class Shell {
             SavedFds applyRedirect(const ParsedCommand &cmd);
             void restoreRedirect(SavedFds fds);
             static char* Completer(const char* text , int state) ;
+            void handleCompleteCommand(std::vector<std::string> &args);
 };
 
