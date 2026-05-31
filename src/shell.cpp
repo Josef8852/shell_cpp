@@ -384,28 +384,22 @@ void Shell::handleCompleteCommand(vector<string> &args) {
 
     string flag = args[1];
 
-    bool completionFound = false ;
-
     if(flag == "-p") {
         command = args[2] ;
 
-        for(auto entry : registeredCompletions) {
-
-            if(entry.first == command) {
-                completionFound = true ; 
-                cout << "complete -C " << "'" << entry.second << "'" << " " <<  entry.first  << endl ;
-                break ;
-            }
+        auto it = registeredCompletions.find(command);
+        
+        if(it != registeredCompletions.end()) {
+            cout << "complete -C '" << it->second << "' " << it->first << endl;
+        } else {
+            cout << "complete: " << command << ": no completion specification" << endl;
         }
-
-        if(!completionFound) {
-            cout << "complete: " << command << ": no completion specification" << endl ;
-        }
+      
     }
     else if(flag == "-C") {
           pathToRegister = args[2];
           command = args[3] ;
-          registeredCompletions.insert({command , pathToRegister});
+          registeredCompletions[command] = pathToRegister ;
     }
     
 
