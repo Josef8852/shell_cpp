@@ -1,4 +1,5 @@
 #include "shell.h"
+#include <readline/readline.h>
 
 using namespace std;
 
@@ -354,6 +355,10 @@ char* Shell::Completer(const char* text, int state) {
                     string output(buff) ; 
 
                     output.erase(output.find_last_not_of("\n\r ") + 1);
+
+                    if(output.empty()) {
+                        rl_ding();
+                    }
                     
                     matches.push_back(output);
                     
