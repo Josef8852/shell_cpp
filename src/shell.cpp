@@ -351,7 +351,12 @@ char* Shell::Completer(const char* text, int state) {
                     
                     argv.push_back((char *)text) ;
 
-                    argv.push_back((char *)words[words.size() - 2].c_str());
+                    if(words.size() >= 2) {
+                        argv.push_back((char *)words[words.size() - 2].c_str());
+                    }
+                    else {
+                        argv.push_back((char*)""); // pass empty string 
+                    }
                         
                     argv.push_back(nullptr);
                     
