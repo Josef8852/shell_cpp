@@ -359,8 +359,11 @@ char* Shell::Completer(const char* text, int state) {
                     if(output.empty()) {
                         rl_ding();
                     }
+                    else {
+                         matches.push_back(output);
+                    }
                     
-                    matches.push_back(output);
+           
                     
                 }
                 else {
