@@ -306,6 +306,11 @@ char* Shell::Completer(const char* text, int state) {
 
     if(state == 0) {
 
+        
+        matchingIndex = 0;
+        
+        matches.clear();
+
         // registered completions first 
 
         // get curr line from shell 
@@ -359,10 +364,6 @@ char* Shell::Completer(const char* text, int state) {
     }
 
 
-
-        
-        matchingIndex = 0;
-        matches.clear();
 
         string prefix(text);
 
