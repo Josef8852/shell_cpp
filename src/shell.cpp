@@ -1,6 +1,5 @@
 #include "shell.h"
-#include <readline/readline.h>
-#include <sstream>
+
 
 using namespace std;
 
@@ -337,12 +336,23 @@ char* Shell::Completer(const char* text, int state) {
 
                     vector<char*> argv = {(char * )path.c_str()};
 
-                    stringstream args(line) ; 
-                    string arg ; 
-                    while(args >> arg) {
-                        argv.push_back((char*)arg.c_str());
+                    vector<string> words ; 
+                    
+                    stringstream ss(line) ; 
+                    
+                    string word ; 
+                    
+                    while(ss >> word) {
+                        words.push_back(word);
                     }
 
+
+                    argv.push_back((char *)words[0].c_str());
+                    
+                    argv.push_back((char *)text) ;
+
+                    argv.push_back((char *)words[words.size() - 2].c_str());
+                        
                     argv.push_back(nullptr);
                     
                     execv(path.c_str(), argv.data());
