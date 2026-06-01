@@ -527,7 +527,7 @@ void Shell::handleCompleteCommand(vector<string> &args) {
           registeredCompletions[command] = pathToRegister ;
     }
     else if(flag == "-r") {
-        registeredCompletions.erase(registeredCompletions[command]);
+        registeredCompletions.erase(command);
     }
     
 }
