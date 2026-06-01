@@ -413,6 +413,7 @@ char* Shell::Completer(const char* text, int state) {
                              if(output.empty()) {
                                  rl_ding();
                                  matches.push_back(text);
+                                 rl_completion_suppress_append = 1;
                              }
                              else {
                                   matches.push_back(output);
