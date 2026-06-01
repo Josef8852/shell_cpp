@@ -413,19 +413,6 @@ char* Shell::Completer(const char* text, int state) {
 
                        rl_completion_suppress_append = 1;
                    }
-                   else {
-                             string output(buff) ; 
-                             output.erase(output.find_last_not_of("\n\r ") + 1);
-
-                             if(output.empty()) {
-                                 rl_ding();
-                                 matches.push_back(text);
-                                 rl_completion_suppress_append = 1;
-                             }
-                             else {
-                                  matches.push_back(output);
-                             }
-                   }
                              
                 }
                 else {
