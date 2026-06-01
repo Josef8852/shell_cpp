@@ -35,6 +35,7 @@ class Shell {
                 "pwd" , 
                 "cd" , 
                 "complete" ,
+                "jobs",
             };
 
              struct ParsedCommand {
