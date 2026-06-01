@@ -391,14 +391,21 @@ char* Shell::Completer(const char* text, int state) {
                     
                     char buff[256];
 
-                    bool hasOutput = fgets(buff, sizeof(buff), file) != nullptr ;
+                    while(fgets(buff, sizeof(buff), file) != nullptr) {
+
+                        string output(buff);
+                        
+                        output.erase(output.find_last_not_of("\n\r ") + 1);
+
+                        matches.push_back(output);
+                    }
 
                     fclose(file);
                     
                     waitpid(pid, nullptr, 0); // wait to finish 
                     
                     
-                   if(!hasOutput) {
+                   if(matches.empty()) {
                         
                        rl_ding();
                        
