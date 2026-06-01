@@ -305,6 +305,62 @@ char* Shell::Completer(const char* text, int state) {
     static size_t matchingIndex;
 
     if(state == 0) {
+
+        // registered completions first 
+
+        // get curr line from shell 
+        string line(rl_line_buffer);
+
+        for(auto &[command , path] : registeredCompletions) {
+            if(line.rfind(command + " " , 0) == 0) {
+
+                // create a pipe pipefd[0] read , pipefd[1] write 
+                int pipefd[2] ; 
+                pipe(pipefd);
+
+                pid_t pid = fork();
+
+                // child write
+                if(pid == 0) {
+                    close(pipefd[0]);
+                    dup2(pipefd[1] , 1); // stdout 
+                    close(pipefd[1]);
+
+                    char * argv[] = {(char * )path.c_str(), nullptr};
+                    execv(path.c_str(), argv);
+                }
+                // parent reads
+                else if(pid > 0) {
+                    
+                    close(pipefd[1]);
+                    
+                    FILE * file = fdopen(pipefd[0], "r"); // read 
+                    
+                    char buff[256];
+                    
+                    fgets(buff, sizeof(buff), file); // store 
+                    
+                    fclose(file);
+                    
+                    waitpid(pid, nullptr, 0); // wait to finish 
+                    
+                    string output(buff) ; 
+
+                    output.erase(output.find_last_not_of("\n\r ") + 1);
+                    
+                    matches.push_back(output);
+                    
+                }
+                else {
+                    perror("fork failed");
+                }
+        }
+        
+    }
+
+
+
+        
         matchingIndex = 0;
         matches.clear();
 
@@ -372,57 +428,6 @@ char* Shell::Completer(const char* text, int state) {
              }
 
 
-        // registered completions
-
-        // get curr line from shell 
-        string line(rl_line_buffer);
-
-        for(auto &[command , path] : registeredCompletions) {
-            if(line.rfind(command + " " , 0) == 0) {
-
-                // create a pipe pipefd[0] read , pipefd[1] write 
-                int pipefd[2] ; 
-                pipe(pipefd);
-
-                pid_t pid = fork();
-
-                // child write
-                if(pid == 0) {
-                    close(pipefd[0]);
-                    dup2(pipefd[1] , 1); // stdout 
-                    close(pipefd[1]);
-
-                    char * argv[] = {(char * )path.c_str(), nullptr};
-                    execv(path.c_str(), argv);
-                }
-                // parent reads
-                else if(pid > 0) {
-                    
-                    close(pipefd[1]);
-                    
-                    FILE * file = fdopen(pipefd[0], "r"); // read 
-                    
-                    char buff[256];
-                    
-                    fgets(buff, sizeof(buff), file); // store 
-                    
-                    fclose(file);
-                    
-                    waitpid(pid, nullptr, 0); // wait to finish 
-                    
-                    string output(buff) ; 
-
-                    output.erase(output.find_last_not_of("\n\r ") + 1);
-                    
-                    matches.push_back(output);
-                    
-                }
-                else {
-                    perror("fork failed");
-                }
-        }
-        
-    }
 
     
     }
