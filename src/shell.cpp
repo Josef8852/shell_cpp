@@ -372,7 +372,7 @@ char* Shell::Completer(const char* text, int state) {
 
                     string COMP_LINE =  "COMP_LINE=" + line;
 
-                    string COMP_POINT = "COMP_POINT=" + string((char*)line.length());
+                    string COMP_POINT = "COMP_POINT=" + to_string(line.length());
 
                     envp.push_back((char*)COMP_LINE.c_str());
                     
