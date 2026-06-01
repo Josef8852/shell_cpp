@@ -1,10 +1,13 @@
 #include "shell.h"
+#include <unistd.h>
 
 
 using namespace std;
 
 namespace fs = filesystem;
 
+// current process environment variables
+extern char** environ ;
 
 Shell::Shell() {
     // tell readline to use our custom completer instead of the default file/dir completer
@@ -359,8 +362,16 @@ char* Shell::Completer(const char* text, int state) {
                     }
                         
                     argv.push_back(nullptr);
+
+                    // pass env vars
+                    vector<char*> envp ; 
+
+                    for(int i = 0 ; environ[i] != nullptr ; i++) {
+                        envp.push_back(environ[i]);
+                    }
+                 
                     
-                    execv(path.c_str(), argv.data());
+                    execve(path.c_str(), argv.data() , envp.data());
                 }
                 // parent reads
                 else if(pid > 0) {
