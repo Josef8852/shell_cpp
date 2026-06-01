@@ -315,10 +315,12 @@ char* Shell::Completer(const char* text, int state) {
 
         // get curr line from shell 
         string line(rl_line_buffer);
+        bool usedRegisteredCompleter = false ;
 
         for(auto &[command , path] : registeredCompletions) {
             if(line.rfind(command + " " , 0) == 0) {
 
+                usedRegisteredCompleter = true ; 
                 // create a pipe pipefd[0] read , pipefd[1] write 
                 int pipefd[2] ; 
                 pipe(pipefd);
@@ -364,7 +366,7 @@ char* Shell::Completer(const char* text, int state) {
     }
 
 
-
+    if(!usedRegisteredCompleter) {
         string prefix(text);
 
         // index of last "/"
@@ -429,6 +431,9 @@ char* Shell::Completer(const char* text, int state) {
              }
 
 
+    }
+
+  
 
     
     }
