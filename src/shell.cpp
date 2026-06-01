@@ -403,6 +403,7 @@ char* Shell::Completer(const char* text, int state) {
 
                     if(output.empty()) {
                         rl_ding();
+                        matches.push_back(text);
                     }
                     else {
                          matches.push_back(output);
