@@ -1,5 +1,6 @@
 #include "shell.h"
 #include <readline/readline.h>
+#include <sstream>
 
 using namespace std;
 
@@ -334,8 +335,17 @@ char* Shell::Completer(const char* text, int state) {
                     dup2(pipefd[1] , 1); // stdout 
                     close(pipefd[1]);
 
-                    char * argv[] = {(char * )path.c_str(), nullptr};
-                    execv(path.c_str(), argv);
+                    vector<char*> argv = {(char * )path.c_str()};
+
+                    stringstream args(line) ; 
+                    string arg ; 
+                    while(args >> arg) {
+                        argv.push_back((char*)arg.c_str());
+                    }
+
+                    argv.push_back(nullptr);
+                    
+                    execv(path.c_str(), argv.data());
                 }
                 // parent reads
                 else if(pid > 0) {
