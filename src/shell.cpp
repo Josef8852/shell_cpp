@@ -42,6 +42,8 @@ void Shell::run() {
 
         else if(command == "complete") handleCompleteCommand(cmd.args);
 
+        else if(command == "jobs") handleJobs();
+
         else {
 
             string fullPath = findExecutableInPath(PATH, command);
@@ -533,6 +535,10 @@ void Shell::handleCompleteCommand(vector<string> &args) {
     }
     
 }
-  
+
+
+void Shell::handleJobs() {
+    return ; 
+}
 
     

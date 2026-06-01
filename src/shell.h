@@ -79,5 +79,7 @@ class Shell {
             static char* Completer(const char* text , int state) ;
             
             void handleCompleteCommand(std::vector<std::string> &args);
+
+            void handleJobs(); 
 };
 
