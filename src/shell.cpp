@@ -369,7 +369,16 @@ char* Shell::Completer(const char* text, int state) {
                     for(int i = 0 ; environ[i] != nullptr ; i++) {
                         envp.push_back(environ[i]);
                     }
-                 
+
+                    string COMP_LINE =  "COMP_LINE=" + line;
+
+                    string COMP_POINT = "COMP_POINT=" + string((char*)line.length());
+
+                    envp.push_back((char*)COMP_LINE.c_str());
+                    
+                    envp.push_back((char*)COMP_POINT.c_str());
+                    
+                    envp.push_back(nullptr);
                     
                     execve(path.c_str(), argv.data() , envp.data());
                 }
