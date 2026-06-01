@@ -1,5 +1,5 @@
 #include "shell.h"
-#include <unistd.h>
+
 
 
 using namespace std;
@@ -390,27 +390,33 @@ char* Shell::Completer(const char* text, int state) {
                     FILE * file = fdopen(pipefd[0], "r"); // read 
                     
                     char buff[256];
-                    
-                    fgets(buff, sizeof(buff), file); // store 
-                    
+
+                    bool hasOutput = fgets(buff, sizeof(buff), file) != nullptr ;
+
                     fclose(file);
                     
                     waitpid(pid, nullptr, 0); // wait to finish 
                     
-                    string output(buff) ; 
-
-                    output.erase(output.find_last_not_of("\n\r ") + 1);
-
-                    if(output.empty()) {
-                        rl_ding();
-                        matches.push_back(text);
-                    }
-                    else {
-                         matches.push_back(output);
-                    }
                     
-           
-                    
+                   if(!hasOutput) {
+                        
+                       rl_ding();
+                       
+                       matches.push_back(text);
+                   }
+                   else {
+                             string output(buff) ; 
+                             output.erase(output.find_last_not_of("\n\r ") + 1);
+
+                             if(output.empty()) {
+                                 rl_ding();
+                                 matches.push_back(text);
+                             }
+                             else {
+                                  matches.push_back(output);
+                             }
+                   }
+                             
                 }
                 else {
                     perror("fork failed");
