@@ -403,6 +403,8 @@ char* Shell::Completer(const char* text, int state) {
                        rl_ding();
                        
                        matches.push_back(text);
+
+                       rl_completion_suppress_append = 1;
                    }
                    else {
                              string output(buff) ; 
