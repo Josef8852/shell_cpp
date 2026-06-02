@@ -45,11 +45,11 @@ private:
     static std::string getPath();
     inline static std::string PATH = getPath();
 
-    inline static std::unordered_set<std::string> builtins = {
+    inline static std::unordered_set<std::string> builtins_ = {
         "echo", "exit", "type", "pwd", "cd", "complete", "jobs",
     };
 
-    inline static std::map<std::string, std::string> registeredCompletions;
+    inline static std::map<std::string, std::string> registeredCompletions_;
 
     //  Instance data
     std::unordered_map<std::string, Handler> handlers_;

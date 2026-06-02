@@ -192,7 +192,7 @@ void Shell::handleTypeCommand(vector<string> &args) {
 
         string arg = args[i];
 
-        if(builtins.count(arg)) {
+        if(builtins_.count(arg)) {
             cout << arg << " is a shell builtin" << endl;
         }
         else {
@@ -328,7 +328,7 @@ char* Shell::Completer(const char* text, int state) {
         string line(rl_line_buffer);
         bool usedRegisteredCompleter = false ;
 
-        for(auto &[command , path] : registeredCompletions) {
+        for(auto &[command , path] : registeredCompletions_) {
             if(line.rfind(command + " " , 0) == 0) {
 
                 usedRegisteredCompleter = true ; 
@@ -446,7 +446,7 @@ char* Shell::Completer(const char* text, int state) {
         // An empty prefix means we're completing an argument -> files/dirs only.
         if(!prefix.empty()) {
 
-            for(auto &builtin : builtins) {
+            for(auto &builtin : builtins_) {
                 if(builtin.rfind(prefix, 0) == 0) {
                     matches.push_back(builtin);
                 }
@@ -519,9 +519,9 @@ void Shell::handleCompleteCommand(vector<string> &args) {
     if(flag == "-p") {
         command = args[2] ;
 
-        auto it = registeredCompletions.find(command);
+        auto it = registeredCompletions_.find(command);
         
-        if(it != registeredCompletions.end()) {
+        if(it != registeredCompletions_.end()) {
             cout << "complete -C '" << it->second << "' " << it->first << endl;
         } else {
             cout << "complete: " << command << ": no completion specification" << endl;
@@ -531,11 +531,11 @@ void Shell::handleCompleteCommand(vector<string> &args) {
     else if(flag == "-C") {
           pathToRegister = args[2];
           command = args[3] ;
-          registeredCompletions[command] = pathToRegister ;
+          registeredCompletions_[command] = pathToRegister ;
     }
     else if(flag == "-r") {
         command = args[2];
-        registeredCompletions.erase(command);
+        registeredCompletions_.erase(command);
         rl_ding();
     }
     
