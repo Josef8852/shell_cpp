@@ -18,75 +18,64 @@
 #include <unordered_map>
 
 class Shell {
+public:
+    Shell();
+    void run();
 
-        public:
+private:
+    //  Types 
+    struct ParsedCommand {
+        std::vector<std::string> args;
+        std::string redirectStdoutFile;
+        std::string redirectStderrFile;
+        bool redirectStdout = false;
+        bool redirectStderr = false;
+        bool appendStdout   = false;
+        bool appendStderr   = false;
+    };
 
-        Shell();
-        void run();
+    struct SavedFds {
+        int savedStdout = -1;
+        int savedStderr = -1;
+    };
 
-        private:
+    using Handler = std::function<void(ParsedCommand&)>;
 
-            
-            static std::string getPath();
-            inline static std::string PATH = getPath();
-            
-            inline static std::unordered_set<std::string> builtins = {
-                "echo",
-                "exit",
-                "type",  
-                "pwd" , 
-                "cd" , 
-                "complete" ,
-                "jobs",
-            };
+    // ── Static data ──────────────────────────────────────────
+    static std::string getPath();
+    inline static std::string PATH = getPath();
 
+    inline static std::unordered_set<std::string> builtins = {
+        "echo", "exit", "type", "pwd", "cd", "complete", "jobs",
+    };
 
-             struct ParsedCommand {
-                std::vector<std::string> args ; 
-                std::string redirectStdoutFile ; 
-                std::string redirectStderrFile ;
-                bool redirectStdout = false ;
-                bool redirectStderr = false ;
-                bool appendStdout = false;
-                bool appendStderr = false;
-            };
+    inline static std::map<std::string, std::string> registeredCompletions;
 
-               using Handler = std::function<void(ParsedCommand &cmd)>;
-                
-               std::unordered_map<std::string, Handler> handlers_ ;  
+    //  Instance data
+    std::unordered_map<std::string, Handler> handlers_;
 
-            struct SavedFds {
-                int savedStdout = -1 ; 
-                int savedStderr = -1 ;
-            };
+    //  Parsing 
+    ParsedCommand parseLine(const std::string &input);
+    std::vector<std::string> tokenize(const std::string &input);
+    ParsedCommand parseRedirects(const std::vector<std::string> &words);
 
-            inline static std::map<std::string, std::string> registeredCompletions ;
+    //  Builtins 
+    void printLine(std::vector<std::string> &args);
+    void printCurrentDir();
+    void changeDirectory(std::vector<std::string> &args);
+    void handleTypeCommand(std::vector<std::string> &args);
+    void handleCompleteCommand(std::vector<std::string> &args);
+    void handleJobs();
 
-            void printLine(std::vector<std::string> &args);
-            
-            ParsedCommand parseLine(const std::string &input);
-            std::vector<std::string> tokenize(const std::string &input);
-            ParsedCommand parseRedirects(const std::vector<std::string> &words);
+    //  Execution
+    std::string findExecutableInPath(const std::string &path, const std::string &arg);
+    void executeProgram(const std::string &fullPath, std::vector<std::string> &args);
 
-            
-            std::string findExecutableInPath(const std::string &path, const std::string &arg);
-            
-            void handleTypeCommand(std::vector<std::string> &args);
-            
-            void executeProgram(const std::string &fullPath, std::vector<std::string> &args);
-            
-            void printCurrentDir();
-            
-            void changeDirectory(std::vector<std::string> &args);
-            
-            int redirectFile(const std::string &file, int target, bool append);
-            SavedFds applyRedirect(const ParsedCommand &cmd);
-            void restoreRedirect(SavedFds fds);
-            
-            static char* Completer(const char* text , int state) ;
-            
-            void handleCompleteCommand(std::vector<std::string> &args);
+    //  Redirection 
+    int redirectFile(const std::string &file, int target, bool append);
+    SavedFds applyRedirect(const ParsedCommand &cmd);
+    void restoreRedirect(SavedFds fds);
 
-            void handleJobs(); 
+    //  Completion 
+    static char* Completer(const char* text, int state);
 };
-
