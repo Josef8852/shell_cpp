@@ -14,6 +14,8 @@
 #include <cstddef>
 #include <fcntl.h>
 #include <readline/readline.h>
+#include <functional>
+#include <unordered_map>
 
 class Shell {
 
@@ -38,6 +40,7 @@ class Shell {
                 "jobs",
             };
 
+
              struct ParsedCommand {
                 std::vector<std::string> args ; 
                 std::string redirectStdoutFile ; 
@@ -47,6 +50,10 @@ class Shell {
                 bool appendStdout = false;
                 bool appendStderr = false;
             };
+
+               using Handler = std::function<void(ParsedCommand &cmd)>;
+                
+               std::unordered_map<std::string, Handler> handlers_ ;  
 
             struct SavedFds {
                 int savedStdout = -1 ; 

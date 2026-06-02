@@ -10,6 +10,18 @@ namespace fs = filesystem;
 extern char** environ ;
 
 Shell::Shell() {
+
+
+    handlers_ = {
+
+    {"echo" , [this](ParsedCommand &cmd){printLine(cmd.args);}} ,
+    {"pwd" , [this](ParsedCommand &cmd){printCurrentDir();}} ,
+    {"type" , [this](ParsedCommand &cmd){handleTypeCommand(cmd.args);}}  ,    
+    {"cd" , [this](ParsedCommand &cmd){changeDirectory(cmd.args);}} ,
+    {"complete" , [this](ParsedCommand &cmd){handleCompleteCommand(cmd.args);}} ,
+    {"jobs" , [this](ParsedCommand &cmd){handleJobs();}}   
+    
+    };
     // tell readline to use our custom completer instead of the default file/dir completer
     rl_completion_entry_function = Completer;
 }
@@ -32,17 +44,10 @@ void Shell::run() {
 
         SavedFds fds = applyRedirect(cmd);
 
-        if(command == "echo") printLine(cmd.args);
 
-        else if(command == "pwd") printCurrentDir();
-
-        else if(command == "type") handleTypeCommand(cmd.args);
-
-        else if(command == "cd") changeDirectory(cmd.args);
-
-        else if(command == "complete") handleCompleteCommand(cmd.args);
-
-        else if(command == "jobs") handleJobs();
+        if(auto it = handlers_.find(command) ; it != handlers_.end()) {
+            it->second(cmd);
+        }
 
         else {
 
